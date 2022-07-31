@@ -1,0 +1,38 @@
+ipynb-filters: [nbdev_filter]
+
+project:
+  type: website
+  output-dir: _docs
+  preview:
+    port: 3000
+    browser: false
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+website:
+  title: "genai"
+  description: "In-progress course"
+  execute: 
+    enabled: false
+  twitter-card: true
+  open-graph: true
+  reader-mode: true
+  repo-branch: main
+  repo-url: https://github.com/johnowhitaker/genai/
+  repo-actions: [issue]
+  navbar:
+    background: primary
+    search: true
+    right:
+      - icon: github
+        href: https://github.com/johnowhitaker/genai/
+  sidebar:
+    style: "floating"
+
+metadata-files: 
+  - sidebar.yml
+  - custom.yml
