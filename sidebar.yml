@@ -16,9 +16,10 @@ website:
         - 10_transformers.ipynb
         - 11_sequence_3.ipynb
         - 12_DM1.ipynb
-      - section: Additional Sections
+      - section: Bonus Material
         contents:
         - 30_ethics.ipynb
-      - 00_core.ipynb
+      - section: Utilities
+        contents:
+        - 00_core.ipynb
       - README.md
-      
