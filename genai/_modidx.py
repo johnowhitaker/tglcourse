@@ -31,4 +31,4 @@ d = { 'settings': { 'audience': 'Developers',
                             'genai.core.say_hello': 'https://johnowhitaker.github.io/genai/core.html#say_hello'},
             'genai.utils': { 'genai.utils.load_image_pil': 'https://johnowhitaker.github.io/genai/utils.html#load_image_pil',
                              'genai.utils.pil_to_tensor': 'https://johnowhitaker.github.io/genai/utils.html#pil_to_tensor',
-                             'genai.utils.test_export_fn': 'https://johnowhitaker.github.io/genai/utils.html#test_export_fn'}}}
+                             'genai.utils.tensor_to_pil': 'https://johnowhitaker.github.io/genai/utils.html#tensor_to_pil'}}}
