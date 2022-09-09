@@ -16,21 +16,19 @@ format:
 
 website:
   title: "genai"
+  site-url: "https://johnowhitaker.github.io/genai/"
   description: "In-progress course"
-  execute: 
-    enabled: false
   twitter-card: true
   open-graph: true
-  reader-mode: true
   repo-branch: main
-  repo-url: https://github.com/johnowhitaker/genai/
+  repo-url: "https://github.com/johnowhitaker/genai/"
   repo-actions: [issue]
   navbar:
     background: primary
     search: true
     right:
       - icon: github
-        href: https://github.com/johnowhitaker/genai/
+        href: "https://github.com/johnowhitaker/genai/"
   sidebar:
     style: "floating"
 
