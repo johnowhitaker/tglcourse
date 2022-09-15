@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.189">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>tglcourse - Lesson 1: PyTorch Basics</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="tglcourse - Lesson 1: PyTorch Basics">
+<meta property="og:description" content="PyTorch is primarily a deep learning framework. It has been designed to make creating and working with deep neural networks as easy, fast and flexible as possible.">
+<meta property="og:site-name" content="tglcourse">
+<meta name="twitter:title" content="tglcourse - Lesson 1: PyTorch Basics">
+<meta name="twitter:description" content="PyTorch is primarily a deep learning framework. It has been designed to make creating and working with deep neural networks as easy, fast and flexible as possible.">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">tglcourse</span>
+    </a>
+  </div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Lesson 1: PyTorch Basics</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">The Generative Landscape</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting_started.html" class="sidebar-item-text sidebar-link">Getting Started</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./core.html" class="sidebar-item-text sidebar-link">core</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pytorch_basics.html" class="sidebar-item-text sidebar-link active">Lesson 1: PyTorch Basics</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./optimization.html" class="sidebar-item-text sidebar-link">Lesson 2: Gradient Descent and Optimization</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./building_nns.html" class="sidebar-item-text sidebar-link">Lesson 3: Neural Networks and Loss Functions</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./representations.html" class="sidebar-item-text sidebar-link">Lesson 4: Learning Representations + Style Transfer</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./clip.html" class="sidebar-item-text sidebar-link">Lesson 5: Exploring Multiple Modalities with CLIP</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./generative_1.html" class="sidebar-item-text sidebar-link">Lesson 6 - Generative Modelling Intro (AutoEncoders)</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gan1.html" class="sidebar-item-text sidebar-link">Lesson 7: GANs Part 1 - GAN Training</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gan2.html" class="sidebar-item-text sidebar-link">Lesson 8: Conditional GANs, Training Tricks and GANs+CLIP</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sequence_1.html" class="sidebar-item-text sidebar-link">Lesson 9: Introduction to Sequence Modelling</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transformers.html" class="sidebar-item-text sidebar-link">Lesson 10 - Transformers</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sequence_3.html" class="sidebar-item-text sidebar-link">Lesson 11: Everything Is A Sequence</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dm1.html" class="sidebar-item-text sidebar-link">Lesson 12-14 Diffusion Models</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ethics.html" class="sidebar-item-text sidebar-link">Ethics in Generative Modelling</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./discussions.html" class="sidebar-item-text sidebar-link">Interviews with cool people go here</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bonus_material_intro.html" class="sidebar-item-text sidebar-link">Intro</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#creating-tensors" id="toc-creating-tensors" class="nav-link active" data-scroll-target="#creating-tensors">Creating Tensors</a></li>
+  <li><a href="#tensor-operations" id="toc-tensor-operations" class="nav-link" data-scroll-target="#tensor-operations">Tensor Operations</a></li>
+  <li><a href="#manipulating-tensors" id="toc-manipulating-tensors" class="nav-link" data-scroll-target="#manipulating-tensors">Manipulating Tensors</a></li>
+  <li><a href="#squeezing-tensors" id="toc-squeezing-tensors" class="nav-link" data-scroll-target="#squeezing-tensors">Squeezing Tensors</a></li>
+  <li><a href="#images-as-tensors" id="toc-images-as-tensors" class="nav-link" data-scroll-target="#images-as-tensors">Images as Tensors</a>
+  <ul class="collapse">
+  <li><a href="#images-as-arrays-of-numbers" id="toc-images-as-arrays-of-numbers" class="nav-link" data-scroll-target="#images-as-arrays-of-numbers">Images as arrays of numbers</a></li>
+  <li><a href="#load_image_pil" id="toc-load_image_pil" class="nav-link" data-scroll-target="#load_image_pil">load_image_pil</a></li>
+  <li><a href="#converting-to-tensors" id="toc-converting-to-tensors" class="nav-link" data-scroll-target="#converting-to-tensors">Converting to Tensors</a></li>
+  <li><a href="#tensor_to_pil" id="toc-tensor_to_pil" class="nav-link" data-scroll-target="#tensor_to_pil">tensor_to_pil</a></li>
+  <li><a href="#pil_to_tensor" id="toc-pil_to_tensor" class="nav-link" data-scroll-target="#pil_to_tensor">pil_to_tensor</a></li>
+  <li><a href="#transforms" id="toc-transforms" class="nav-link" data-scroll-target="#transforms">Transforms</a></li>
+  <li><a href="#exercise-least-average-image" id="toc-exercise-least-average-image" class="nav-link" data-scroll-target="#exercise-least-average-image">Exercise: Least Average Image</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/johnowhitaker/genai/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Lesson 1: PyTorch Basics</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data:image/png;base64,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.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">PyTorch Logo</figcaption><p></p>
+</figure>
+</div>
+<p>PyTorch is primarily a deep learning framework. It has been designed to make creating and working with deep neural networks as easy, fast and flexible as possible. Today we’ll look at one of the core components that makes this possible: tensors. We’ll start by looking at how to contruct and manipulate tensors, and then apply some of these ideas by representing images as tensors and seeing what we can do with that.</p>
+<section id="creating-tensors" class="level2">
+<h2 class="anchored" data-anchor-id="creating-tensors">Creating Tensors</h2>
+<p>We can construct a tensor directly from some common python iterables, such as list and tuple. Nested iterables can also be handled as long as the dimensions make sense.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tensor from a list</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> torch.tensor([<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>])</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tensor a: </span><span class="sc">{</span>a<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#tensor from a tuple of tuples</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> ((<span class="fl">1.0</span>, <span class="fl">1.1</span>), (<span class="fl">1.2</span>, <span class="fl">1.3</span>))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> torch.tensor(b)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tensor b: </span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># tensor from a numpy array</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> np.ones([<span class="dv">2</span>, <span class="dv">3</span>])</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> torch.tensor(c)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tensor c: </span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tensor a: tensor([0, 1, 2])
+Tensor b: tensor([[1.0000, 1.1000],
+        [1.2000, 1.3000]])
+Tensor c: tensor([[1., 1., 1.],
+        [1., 1., 1.]], dtype=torch.float64)</code></pre>
+</div>
+</div>
+<p>It’s easy to get confused as to what ‘shape’ a tensor has. So debugging tip #1: when in doubt, print out the shape!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(b.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>torch.Size([2, 2])</code></pre>
+</div>
+</div>
+<p>There are also various constructor methods you can use. The arguments determine the size - explore changing these are see what happens to the output:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.ones(<span class="dv">5</span>, <span class="dv">3</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> torch.zeros(<span class="dv">2</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> torch.empty(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tensor x: </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tensor y: </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tensor z: </span><span class="sc">{</span>z<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tensor x: tensor([[1., 1., 1.],
+        [1., 1., 1.],
+        [1., 1., 1.],
+        [1., 1., 1.],
+        [1., 1., 1.]])
+Tensor y: tensor([0., 0.])
+Tensor z: tensor([[[-9.6687e+05,  4.5768e-41, -9.6687e+05,  4.5768e-41,  4.4842e-44]]])</code></pre>
+</div>
+</div>
+<p>Notice that <code>.empty()</code> does not return zeros, but seemingly random small numbers. Unlike <code>.zeros()</code>, which initialises the elements of the tensor with zeros, <code>.empty()</code> just allocates the memory. It is hence a bit faster if you are looking to just create a tensor.</p>
+<p>There are also constructors for random numbers:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># uniform distribution</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> torch.rand(<span class="dv">1</span>, <span class="dv">3</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># normal distribution</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> torch.randn(<span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tensor a: </span><span class="sc">{</span>a<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tensor b: </span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tensor a: tensor([[0.4667, 0.2377, 0.6470]])
+Tensor b: tensor([[ 0.4998,  0.0493,  0.3098,  2.1031],
+        [-0.6930,  0.0779,  1.4219, -0.4984],
+        [ 0.4873,  2.1178,  0.7367, -0.5286]])</code></pre>
+</div>
+</div>
+<p><strong>THINK</strong>: What’s the difference? If you’re curious, use <code>plt.hist(torch.randn(100))</code> to view the distribution.</p>
+<p>There are also constructors that allow us to construct a tensor according to the above constructors, but with dimensions equal to another tensor:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> torch.zeros_like(a)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> torch.rand_like(c)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tensor c: </span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tensor d: </span><span class="sc">{</span>d<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tensor c: tensor([[0., 0., 0.]])
+Tensor d: tensor([[0.1912, 0.0762, 0.2309]])</code></pre>
+</div>
+</div>
+<p>Finally, <code>.arange()</code> and <code>.linspace()</code> behave how you would expect them to if you are familar with numpy.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> torch.arange(<span class="dv">0</span>, <span class="dv">10</span>, step<span class="op">=</span><span class="dv">1</span>) <span class="co"># Equivalent to np.arange(0, 10, step=1)</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> torch.linspace(<span class="dv">0</span>, <span class="dv">5</span>, steps<span class="op">=</span><span class="dv">11</span>) <span class="co"># np.linspace(0, 5, num=11)</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tensor a: </span><span class="sc">{</span>a<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tensor b: </span><span class="sc">{</span>b<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tensor a: tensor([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+Tensor b: tensor([0.0000, 0.5000, 1.0000, 1.5000, 2.0000, 2.5000, 3.0000, 3.5000, 4.0000,
+        4.5000, 5.0000])
+</code></pre>
+</div>
+</div>
+</section>
+<section id="tensor-operations" class="level2">
+<h2 class="anchored" data-anchor-id="tensor-operations">Tensor Operations</h2>
+<p>We can perform operations on tensors using methods under <code>torch.</code>. However, in PyTorch most common Python operators are overridden, so we can use those instead. The common standard arithmetic operators (+, -, *, /, and **) have all been lifted to elementwise operations.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.tensor([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">8</span>])</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> torch.tensor([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>])</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Addition via torch.add:'</span>, torch.add(x, y))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Addition using "+":'</span>, x<span class="op">+</span>y) <span class="co"># The same</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Some other operations:'</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>x <span class="op">+</span> y, x <span class="op">-</span> y, x <span class="op">*</span> y, x <span class="op">/</span> y, x<span class="op">**</span>y  <span class="co"># The ** operator is exponentiation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Addition via torch.add: tensor([ 2,  4,  7, 12])
+Addition using "+": tensor([ 2,  4,  7, 12])
+Some other operations:</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>(tensor([ 2,  4,  7, 12]),
+ tensor([0, 0, 1, 4]),
+ tensor([ 1,  4, 12, 32]),
+ tensor([1.0000, 1.0000, 1.3333, 2.0000]),
+ tensor([   1,    4,   64, 4096]))</code></pre>
+</div>
+</div>
+<p><strong>THINK</strong>: What does ‘element-wise’ mean? Inspect the outputs above.</p>
+<p>Tensors also have many built-in methods such as <code>.mean()</code> or <code>.sum()</code> (see the full list here: https://pytorch.org/docs/stable/tensors.html). Whenever you’re working with a multi-dimensional tensor, pay attention to the dimensions and think about what result you’re aiming to achieve.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.rand(<span class="dv">3</span>, <span class="dv">3</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'x:</span><span class="ch">\n</span><span class="st">'</span>, x)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sum of every element of x: </span><span class="sc">{</span>x<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sum of the columns of x: </span><span class="sc">{</span>x<span class="sc">.</span><span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sum of the rows of x: </span><span class="sc">{</span>x<span class="sc">.</span><span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x:
+ tensor([[0.0145, 0.3146, 0.5263],
+        [0.0637, 0.4827, 0.9685],
+        [0.5460, 0.2917, 0.4807]])
+Sum of every element of x: 3.6887564659118652
+Sum of the columns of x: tensor([0.6242, 1.0890, 1.9756])
+Sum of the rows of x: tensor([0.8554, 1.5149, 1.3185])</code></pre>
+</div>
+</div>
+<p>Remember we said most operations default to ‘element-wise’? What if we want the matrix operation? Torch has you covered there as well. <code>torch.matmul()</code> or the <code>@</code> symbol let you do matrix multiplication. For dot multiplication, you can use torch.dot().</p>
+<p>Transposes of 2D tensors are obtained using <code>torch.t()</code> or <code>Tensor.T</code>. Note the lack of brackets for <code>Tensor.T</code> - it is an attribute, not a method.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> torch.rand(<span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> a.T</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'a.shape:'</span>, a.shape, <span class="st">'b.shape:'</span>, b.shape)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a<span class="op">@</span>b) <span class="co"># Matrix multiplication of a 2x3 with a 3x2 matrix gives a 2x2 result.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>a.shape: torch.Size([2, 3]) b.shape: torch.Size([3, 2])
+tensor([[0.9549, 0.9102],
+        [0.9102, 1.4344]])</code></pre>
+</div>
+</div>
+</section>
+<section id="manipulating-tensors" class="level2">
+<h2 class="anchored" data-anchor-id="manipulating-tensors">Manipulating Tensors</h2>
+<p>Beyond mathematical operations, we often want to access specific items or sets if items in a tensor, or perform operations like changing the shape of a tensor. Here are a few examples of some common tasks. These may feel simple if you’re used to something like numpy, but it’s worth making sure you know how to do these basic operations (or at least, you know where to find these examples again to refer to them!) since we’ll use these a lot in the coming lessons.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Indexing tensors</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.arange(<span class="dv">0</span>, <span class="dv">10</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x[<span class="dv">1</span>:<span class="dv">3</span>]) <span class="co"># From index 1 up to but NOT INCLUDING index 3</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x[:<span class="op">-</span><span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+tensor(9)
+tensor([1, 2])
+tensor([0, 1, 2, 3, 4, 5, 6, 7])</code></pre>
+</div>
+</div>
+<p>Reshaping works as long as the shapes make sense. (3, 4) -&gt; (4, 3) is fine, but (3, 4) -&gt; (8, 2) won’t work since there aren’t enough elements!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co"> rework example</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Reshaping</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> torch.arange(<span class="dv">12</span>).reshape(<span class="dv">6</span>, <span class="dv">2</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Original z (6, 2) : </span><span class="ch">\n</span><span class="ss"> </span><span class="sc">{</span>z<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2D -&gt; 1D</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> z.flatten()</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Flattened z: </span><span class="ch">\n</span><span class="ss"> </span><span class="sc">{</span>z<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co"># and back to 2D</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> z.reshape(<span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Reshaped (3x4) z: </span><span class="ch">\n</span><span class="ss"> </span><span class="sc">{</span>z<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Original z (6, 2) : 
+ tensor([[ 0,  1],
+        [ 2,  3],
+        [ 4,  5],
+        [ 6,  7],
+        [ 8,  9],
+        [10, 11]])
+Flattened z: 
+ tensor([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11])
+Reshaped (3x4) z: 
+ tensor([[ 0,  1,  2,  3],
+        [ 4,  5,  6,  7],
+        [ 8,  9, 10, 11]])</code></pre>
+</div>
+</div>
+<p>Concatenating tensors is done with torch.cat - take a look at this examples and take note of how the dimension specified affects the output:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create two tensors of the same shape</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.arange(<span class="dv">12</span>, dtype<span class="op">=</span>torch.float32).reshape((<span class="dv">3</span>, <span class="dv">4</span>))</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> torch.tensor([[<span class="fl">2.0</span>, <span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">3</span>], [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>], [<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>]])</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">#concatenate them along rows</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>cat_rows <span class="op">=</span> torch.cat((x, y), dim<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co"># concatenate along columns</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>cat_cols <span class="op">=</span> torch.cat((x, y), dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co"># printing outputs</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Concatenated by rows: shape</span><span class="sc">{}</span><span class="st"> </span><span class="ch">\n</span><span class="st"> </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(<span class="bu">list</span>(cat_rows.shape), cat_rows))</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st"> Concatenated by colums: shape</span><span class="sc">{}</span><span class="st">  </span><span class="ch">\n</span><span class="st"> </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(<span class="bu">list</span>(cat_cols.shape), cat_cols))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Concatenated by rows: shape[6, 4] 
+ tensor([[ 0.,  1.,  2.,  3.],
+        [ 4.,  5.,  6.,  7.],
+        [ 8.,  9., 10., 11.],
+        [ 2.,  1.,  4.,  3.],
+        [ 1.,  2.,  3.,  4.],
+        [ 4.,  3.,  2.,  1.]])
+
+ Concatenated by colums: shape[3, 8]  
+ tensor([[ 0.,  1.,  2.,  3.,  2.,  1.,  4.,  3.],
+        [ 4.,  5.,  6.,  7.,  1.,  2.,  3.,  4.],
+        [ 8.,  9., 10., 11.,  4.,  3.,  2.,  1.]])</code></pre>
+</div>
+</div>
+</section>
+<section id="squeezing-tensors" class="level2">
+<h2 class="anchored" data-anchor-id="squeezing-tensors">Squeezing Tensors</h2>
+<p>When processing batches of data, you will quite often be left with singleton dimensions. e.g.&nbsp;[1,10] or [256, 1, 3]. This dimension can quite easily mess up your matrix operations if you don’t plan on it being there…</p>
+<p>In order to compress tensors along their singleton dimensions we can use the .<code>squeeze()</code> method. We can use the <code>.unsqueeze()</code> method to do the opposite.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.randn(<span class="dv">1</span>, <span class="dv">10</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x.shape)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"x[0]: </span><span class="sc">{</span>x[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>) <span class="co"># printing the zeroth element of the tensor will not give us the first number!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>torch.Size([1, 10])
+x[0]: tensor([ 0.7679, -1.0114,  1.2988, -0.3686,  1.2923, -1.4343,  0.8621, -0.2018,
+         0.8366, -1.2692])</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># lets get rid of that singleton dimension and see what happens now</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> x.squeeze(<span class="dv">0</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x.shape)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"x[0]: </span><span class="sc">{</span>x[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>torch.Size([10])
+x[0]: 0.7679434418678284</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> torch.randn(<span class="dv">5</span>, <span class="dv">5</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"shape of y: </span><span class="sc">{</span>y<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># lets insert a singleton dimension</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> y.unsqueeze(<span class="dv">1</span>) <span class="co"># Note the argument here is 1 - try 0 and 2 and make sure you get a feel for what unsqueeze does. </span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"shape of y: </span><span class="sc">{</span>y<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>shape of y: torch.Size([5, 5])
+shape of y: torch.Size([5, 1, 5])</code></pre>
+</div>
+</div>
+</section>
+<section id="images-as-tensors" class="level2">
+<h2 class="anchored" data-anchor-id="images-as-tensors">Images as Tensors</h2>
+<p>Video: How are images represented? Images as tensors? Demo exercise.</p>
+<p>TODO explanation</p>
+<section id="images-as-arrays-of-numbers" class="level3">
+<h3 class="anchored" data-anchor-id="images-as-arrays-of-numbers">Images as arrays of numbers</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'images/frog.png'</span>).convert(<span class="st">'RGB'</span>).resize((<span class="dv">128</span>, <span class="dv">128</span>))</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>im</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="01_PyTorch_Basics_files/figure-html/cell-17-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>np.array(im).shape <span class="co"># Remove .convert('RGB') in the cell above and see how this changes</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>(128, 128, 3)</code></pre>
+</div>
+</div>
+<p>We’ll want to do this a bunch during the course, so let’s create a function to load an image using PIL and export it so that we can later access it in other notebooks:</p>
+<hr>
+</section>
+<section id="load_image_pil" class="level3">
+<h3 class="anchored" data-anchor-id="load_image_pil">load_image_pil</h3>
+<blockquote class="blockquote">
+<pre><code> load_image_pil (fn, size=None)</code></pre>
+</blockquote>
+<p>And to test that it works:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>load_image_pil(<span class="st">'images/frog.png'</span>, size<span class="op">=</span>(<span class="dv">32</span>, <span class="dv">32</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="01_PyTorch_Basics_files/figure-html/cell-20-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="converting-to-tensors" class="level3">
+<h3 class="anchored" data-anchor-id="converting-to-tensors">Converting to Tensors</h3>
+<p>Mention torchvision.transforms.ToTensor()?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>tensor_im <span class="op">=</span> torch.tensor(np.array(im)).permute(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>)<span class="op">/</span><span class="fl">255.0</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>tensor_im.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>torch.Size([3, 128, 128])</code></pre>
+</div>
+</div>
+<p>TODO Explain order</p>
+<hr>
+</section>
+<section id="tensor_to_pil" class="level3">
+<h3 class="anchored" data-anchor-id="tensor_to_pil">tensor_to_pil</h3>
+<blockquote class="blockquote">
+<pre><code> tensor_to_pil (tensor_im)</code></pre>
+</blockquote>
+<hr>
+</section>
+<section id="pil_to_tensor" class="level3">
+<h3 class="anchored" data-anchor-id="pil_to_tensor">pil_to_tensor</h3>
+<blockquote class="blockquote">
+<pre><code> pil_to_tensor (im)</code></pre>
+</blockquote>
+<p>TODO docstrings, load_image_as_tensor</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co"> Show cropping, accessing a specific channel, converting to BW and back</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="co"># SHow plt.imshow?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> load_image_pil(<span class="st">'images/frog.png'</span>, size<span class="op">=</span>(<span class="dv">128</span>, <span class="dv">128</span>))</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>tensor_im <span class="op">=</span> pil_to_tensor(im)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tensor_im.shape)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>im_out <span class="op">=</span> tensor_to_pil(tensor_im)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(im_out))</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>im_out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>torch.Size([3, 128, 128])
+&lt;class 'PIL.Image.Image'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="01_PyTorch_Basics_files/figure-html/cell-25-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="transforms" class="level3">
+<h3 class="anchored" data-anchor-id="transforms">Transforms</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co"> examples</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="exercise-least-average-image" class="level3">
+<h3 class="anchored" data-anchor-id="exercise-least-average-image">Exercise: Least Average Image</h3>
+<p>Given a set of images, for each pixel find the furthest from the mean. Result: a pretty cool looking image with textures etc from the different inputs</p>
+<p>Code hints and solution hidden .</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co"> introduce torchvision here maybe?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
