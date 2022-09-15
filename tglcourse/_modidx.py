@@ -5,7 +5,6 @@ d = { 'settings': { 'branch': 'main',
                 'doc_host': 'https://johnowhitaker.github.io',
                 'git_url': 'https://github.com/johnowhitaker/genai/',
                 'lib_path': 'tglcourse'},
-  'syms': { 'tglcourse.core': {'tglcourse.core.foo': ('core.html#foo', 'tglcourse/core.py')},
-            'tglcourse.utils': { 'tglcourse.utils.load_image_pil': ('pytorch_basics.html#load_image_pil', 'tglcourse/utils.py'),
+  'syms': { 'tglcourse.utils': { 'tglcourse.utils.load_image_pil': ('pytorch_basics.html#load_image_pil', 'tglcourse/utils.py'),
                                  'tglcourse.utils.pil_to_tensor': ('pytorch_basics.html#pil_to_tensor', 'tglcourse/utils.py'),
                                  'tglcourse.utils.tensor_to_pil': ('pytorch_basics.html#tensor_to_pil', 'tglcourse/utils.py')}}}

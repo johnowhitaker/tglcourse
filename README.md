@@ -5,11 +5,14 @@ The Generative Landscape
 
 Work has just started on this - for now, if you’re interested in these
 topics you might want to check out the previous course I ran on AI ART:
-https://github.com/johnowhitaker/aiaiart
+[AIAIART](https://github.com/johnowhitaker/aiaiart)
+
+If you want to be notified when the course goes ‘live’ you can sign up
+for an email at <http://thegenerativelandscape.com/>
 
 ![](index_files/figure-gfm/cell-2-output-1.png)
 
-## Curriculum plan
+## Curriculum plan / TODO
 
 ### Topics:
 
@@ -34,7 +37,7 @@ https://github.com/johnowhitaker/aiaiart
 - Spotlight: Audio
 - Spotlight: Video
 
-### Extra Skills:
+### Extra Skills / Bonus Material:
 
 - **Ethics in generative modelling**
 - Fine-tuning existing models
@@ -48,6 +51,9 @@ https://github.com/johnowhitaker/aiaiart
 - Dataloaders deep dive, streaming data
 - Navigating other codebases
 - Version control and CI (+ NBDev)
+- “Text inversion” (https://arxiv.org/pdf/2208.01618.pdf)
+- “prompt to prompt editing” https://arxiv.org/pdf/2208.01626.pdf
+- Lots of paper readings / sumaries
 
 ### Projects:
 
@@ -58,11 +64,3 @@ https://github.com/johnowhitaker/aiaiart
 Guest discussions: as many as we can :)
 
 Paper explainers: as many as we can :)
-
-Explain the overall structure?
-
-Stuff that should go in somewhere: - “Text inversion”
-(https://arxiv.org/pdf/2208.01618.pdf) - “prompt to prompt editing”
-https://arxiv.org/pdf/2208.01626.pdf - Lots of paper readings / sumaries
-
-## The Generative Landscape
