@@ -19,7 +19,8 @@ def load_image_pil(fn, size=None):
 
 # %% ../01_PyTorch_Basics.ipynb 50
 def pil_to_tensor(im):
-    return torch.tensor(np.array(im)).permute(2, 0, 1)/255.0
+    # TODO split into multiple lines and explain
+    return torch.tensor(np.array(im)).permute(2, 0, 1).unsqueeze(0)/255.0
 
 def tensor_to_pil(tensor_im):
     tensor_im = tensor_im.squeeze() # In case there is a batch dimension
