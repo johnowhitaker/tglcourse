@@ -16,5 +16,30 @@ website:
     search: true
   sidebar:
     style: floating
+    website:
+    contents:
+      - index.ipynb
+      - section: Lessons
+        contents:
+        - 01_PyTorch Basics.ipynb
+        - 02_Optimization.ipynb
+        - 03_Building NNs.ipynb
+        - 04_Representations.ipynb
+        - 05_CLIP.ipynb
+        - 06_generative_1.ipynb
+        - 07_GAN1.ipynb
+        - 08_GAN2.ipynb
+        - 09_sequence_1.ipynb
+        - 10_transformers.ipynb
+        - 11_sequence_3.ipynb
+        - 12_DM1.ipynb
+      - section: Bonus Material
+        contents:
+        - 60_Bonus_Material_Intro.ipynb
+        - 30_ethics.ipynb
+      - section: Discussions
+        contents:
+        - 40_Discussions.ipynb
+      - README.md
 
 metadata-files: [nbdev.yml, sidebar.yml]
