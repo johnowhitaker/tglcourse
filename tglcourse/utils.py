@@ -3,21 +3,21 @@
 # %% auto 0
 __all__ = ['load_image_pil', 'pil_to_tensor', 'tensor_to_pil']
 
-# %% ../01_PyTorch_Basics.ipynb 2
+# %% ../01_PyTorch_Basics.ipynb 3
 import torch
 import torchvision
 import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
 
-# %% ../01_PyTorch_Basics.ipynb 42
+# %% ../01_PyTorch_Basics.ipynb 43
 def load_image_pil(fn, size=None):
     im = Image.open(fn).convert('RGB')
     if size != None:
         im = im.resize(size)
     return im
 
-# %% ../01_PyTorch_Basics.ipynb 49
+# %% ../01_PyTorch_Basics.ipynb 50
 def pil_to_tensor(im):
     return torch.tensor(np.array(im)).permute(2, 0, 1)/255.0
 

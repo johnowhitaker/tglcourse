@@ -21,9 +21,9 @@ website:
       - index.ipynb
       - section: Lessons
         contents:
-        - 01_PyTorch Basics.ipynb
+        - 01_PyTorch_Basics.ipynb
         - 02_Optimization.ipynb
-        - 03_Building NNs.ipynb
+        - 03_Building_NNs.ipynb
         - 04_Representations.ipynb
         - 05_CLIP.ipynb
         - 06_generative_1.ipynb
@@ -42,4 +42,4 @@ website:
         - 40_Discussions.ipynb
       - README.md
 
-metadata-files: [nbdev.yml, sidebar.yml]
+metadata-files: [nbdev.yml]

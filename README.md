@@ -10,6 +10,11 @@ topics you might want to check out the previous course I ran on AI ART:
 If you want to be notified when the course goes ‘live’ you can sign up
 for an email at <http://thegenerativelandscape.com/>
 
+The material will show in github pages at
+<https://johnowhitaker.github.io/genai/> (and the
+http://thegenerativelandscape.com will redirect there once we launch).
+Hooray for the magic of nbdev.
+
 ![](index_files/figure-gfm/cell-2-output-1.png)
 
 ## Curriculum plan / TODO
