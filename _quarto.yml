@@ -33,6 +33,8 @@ website:
         - 10_transformers.ipynb
         - 11_sequence_3.ipynb
         - 12_DM1.ipynb
+        - 13_DM2.ipynb
+        - 14_DM3.ipynb
       - section: Bonus Material
         contents:
         - 60_Bonus_Material_Intro.ipynb
