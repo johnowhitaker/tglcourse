@@ -38,6 +38,7 @@ website:
       - section: Bonus Material
         contents:
         - 60_Bonus_Material_Intro.ipynb
+        - 61_Datasets.ipynb
         - 30_ethics.ipynb
       - section: Discussions
         contents:
