@@ -11,7 +11,7 @@ from datasets import load_dataset
 from torchvision import transforms as T
 from torch.utils.data import Dataset, DataLoader
 
-# %% ../61_Datasets.ipynb 13
+# %% ../61_Datasets.ipynb 14
 # Specify the pre-processing
 to_tensor = T.ToTensor()
 def mnist_transform(example):
@@ -22,7 +22,7 @@ def mnist_transform(example):
 def get_mnist_dl(batch_size=32, streaming=True, split='train'):
     mnist_dataset = load_dataset('mnist', split=split, streaming=streaming)
     if streaming:
-        mnist_dataset = mnist_dataset.map(mnist_transform, batched=True)
+        mnist_dataset = mnist_dataset.map(mnist_transform, batch_size=batch_size, batched=True)
         mnist_dataset = mnist_dataset.with_format("torch")
     else:
         mnist_dataset = mnist_dataset.with_transform(transform)
