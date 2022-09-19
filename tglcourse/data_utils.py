@@ -19,8 +19,8 @@ def mnist_transform(example):
     return example
 
 # Re-create the streaming example above
-def get_mnist_dl(batch_size=32, streaming=True):
-    mnist_dataset = load_dataset('mnist', split='train', streaming=streaming)
+def get_mnist_dl(batch_size=32, streaming=True, split='train'):
+    mnist_dataset = load_dataset('mnist', split=split, streaming=streaming)
     if streaming:
         mnist_dataset = mnist_dataset.map(mnist_transform, batched=True)
         mnist_dataset = mnist_dataset.with_format("torch")
