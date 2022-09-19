@@ -11,7 +11,7 @@ If you want to be notified when the course goes ‘live’ you can sign up
 for an email at <http://thegenerativelandscape.com/>
 
 The material will show in github pages at
-<https://johnowhitaker.github.io/genai/> (and the
+<https://johnowhitaker.github.io/tglcourse/> (and the
 http://thegenerativelandscape.com will redirect there once we launch).
 Hooray for the magic of nbdev.
 
@@ -44,15 +44,16 @@ Hooray for the magic of nbdev.
 
 ### Extra Skills / Bonus Material:
 
-- **Ethics in generative modelling**
-- Fine-tuning existing models
-- Working with GPUs
-- Multi-GPU or TPU training
-- Experiment Tracking (eg W&B)
-- Sharing demos w/ Gradio
-- Managing cloud machines
 - Datasets and Dataloaders Intro (also defines data util funcs for the
   rest of the course)
+- Experiment Tracking (eg W&B)
+- Pretrained networks and transfer learning
+- **Ethics in generative modelling**
+- Fine-tuning existing models
+- Working with GPUs?
+- Multi-GPU or TPU training?
+- Sharing demos w/ Gradio
+- Managing cloud machines
 - Dataloaders deep dive, streaming data
 - Navigating other codebases
 - Version control and CI (+ NBDev)

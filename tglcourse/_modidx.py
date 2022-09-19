@@ -3,7 +3,7 @@
 d = { 'settings': { 'branch': 'main',
                 'doc_baseurl': '/tglcourse/',
                 'doc_host': 'https://johnowhitaker.github.io',
-                'git_url': 'https://github.com/johnowhitaker/genai/',
+                'git_url': 'https://github.com/johnowhitaker/tglcourse/',
                 'lib_path': 'tglcourse'},
   'syms': { 'tglcourse.utils': { 'tglcourse.utils.load_image_pil': ('pytorch_basics.html#load_image_pil', 'tglcourse/utils.py'),
                                  'tglcourse.utils.pil_to_tensor': ('pytorch_basics.html#pil_to_tensor', 'tglcourse/utils.py'),

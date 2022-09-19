@@ -6,4 +6,4 @@ website:
   site-url: "https://johnowhitaker.github.io/tglcourse/"
   description: "In-progress course"
   repo-branch: main
-  repo-url: "https://github.com/johnowhitaker/genai/"
+  repo-url: "https://github.com/johnowhitaker/tglcourse/"
