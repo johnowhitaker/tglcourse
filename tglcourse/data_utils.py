@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['to_tensor', 'mnist_transform', 'get_mnist_dl']
 
-# %% ../61_Datasets.ipynb 3
+# %% ../61_Datasets.ipynb 4
 import torch
 import datasets
 from .utils import *
@@ -11,7 +11,7 @@ from datasets import load_dataset
 from torchvision import transforms as T
 from torch.utils.data import Dataset, DataLoader
 
-# %% ../61_Datasets.ipynb 14
+# %% ../61_Datasets.ipynb 15
 # Specify the pre-processing
 to_tensor = T.ToTensor()
 def mnist_transform(example):

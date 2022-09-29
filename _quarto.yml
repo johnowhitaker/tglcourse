@@ -40,8 +40,6 @@ website:
         - 60_Bonus_Material_Intro.ipynb
         - 61_Datasets.ipynb
         - 30_ethics.ipynb
-      - section: Discussions
-        contents:
       - 40_Discussions.ipynb
       - 90_Projects.ipynb
 

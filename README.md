@@ -10,6 +10,9 @@ topics you might want to check out the previous course I ran on AI ART:
 If you want to be notified when the course goes ‘live’ you can sign up
 for an email at <http://thegenerativelandscape.com/>
 
+If you want to support this effort, I now have a patreon:
+https://www.patreon.com/johnowhitaker
+
 The material will show in github pages at
 <https://johnowhitaker.github.io/tglcourse/> (and the
 http://thegenerativelandscape.com will redirect there once we launch).
