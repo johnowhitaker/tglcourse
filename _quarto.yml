@@ -42,7 +42,7 @@ website:
         - 30_ethics.ipynb
       - section: Discussions
         contents:
-        - 40_Discussions.ipynb
-      - README.md
+      - 40_Discussions.ipynb
+      - 90_Projects.ipynb
 
 metadata-files: [nbdev.yml]
