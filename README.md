@@ -15,6 +15,12 @@ The material will show in github pages at
 http://thegenerativelandscape.com will redirect there once we launch).
 Hooray for the magic of nbdev.
 
+<div>
+
+[![](https://github.com/johnowhitaker/tglcourse/actions/workflows/test.yaml/badge.svg)](https://github.com/johnowhitaker/tglcourse/actions/workflows/test.yaml)
+
+</div>
+
 ![](index_files/figure-gfm/cell-2-output-1.png)
 
 ## Curriculum plan / TODO
@@ -70,3 +76,35 @@ Hooray for the magic of nbdev.
 Guest discussions: as many as we can :)
 
 Paper explainers: as many as we can :)
+
+### Status
+
+| Lesson                              | Description                                                                     | TODOs                                                                          | Status           |
+|-------------------------------------|---------------------------------------------------------------------------------|--------------------------------------------------------------------------------|------------------|
+| Lesson 1: PyTorch Basics            | Intro to PT, tensor manipulation, images as tensors, LeastAverageImage exercise | Video, tidy                                                                    | Rough Draft Done |
+| Lesson 2: Optimization              | Intro to GD, optimization examples exercise                                     | Video, Optimize with gen+loss without explaining                               | WIP              |
+| Lesson 3: Building NNs              | nn.Module, building blocks, CNNs                                                | Video, project, export functions? optimization/training tricks?                | WIP              |
+| Lesson 4: Learning Representations  | What do networks learn, style transfer                                          | Video, tidy, …                                                                 | WIP              |
+| Lesson 5: CLIP                      | Contrastive loss, CLIP, as a loss function                                      | everything (pull from AIAIART)                                                 | Not Started      |
+| Lesson 6: Generative Modelling      | Intro to generative models, AEs and VAEs, issues                                | everything (pull from AIAIART)                                                 | Not Started      |
+| Lesson 7: GANs 1                    | Intro to GANs, DC GAN, Conditioning                                             | everything                                                                     | Not Started      |
+| Lesson 8: GANs 2                    | GAN training tricks, NOGAN, using modern GANs, VQGAN                            | everything                                                                     | Not Started      |
+| Lesson 9: Sequence Modelling Intro  | idea, language modelling concept, transformer demo                              | everything                                                                     | Not Started      |
+| Lesson 10: Transformers             | Intro to transformes, attention, from scratch or dissect existing ones? ViT?    | everything, check Niels’ repo and other resources                              | Not Started      |
+| Lesson 11: Everythign is a sequence | Show whistlegen, protein, VQGAN, parti…                                         | everything                                                                     | Not Started      |
+| Lesson 12: DM 1                     | Intro to diffusion models, toy example, comparison to DDPM                      | Video, tidy, second half, logs of my version training, better unet replacement | Rough Draft      |
+| Lesson 13: DM2                      | Conditioning, CFG, guiding, sampling, better training                           | everything                                                                     | Not Started      |
+| Lesson 14: DM3                      | SD deep dive                                                                    | combine grokking 1 and 2, polish                                               | Rough Draft Done |
+| Lesson 15: DM4                      | Other modalities - ideally demo class-conditioned audio generation              | wavenet style diffusion for birdcalls, everything                              | Not Started      |
+
+General TODOs - Create a page for project explanations + figure out
+submission info. - Figure out what the discussions page (pages) looks
+like - Ethics page but also callouts in each lesson - Pick a cloud for
+cloud stuff (sponsor?) - Figure out plan for datasets - Figure out
+losses+generators notebook/library bit and include in the plan
+somewhere - Figure out where smaller ‘bonus’ things like paper readings
+or topical deep-dives go. Do we add a blog? - Make the website pretty -
+Generate a bunch of images - Get Dave to make video assets + logo -
+Streamline skipping tests / avoiding anything long-running during CI -
+Set up org on HF for sharing models - Set up W&B projects for sharing
+training runs/reports - Notebook to document the library

@@ -4,6 +4,6 @@ project:
 website:
   title: "tglcourse"
   site-url: "https://johnowhitaker.github.io/tglcourse/"
-  description: "In-progress course"
+  description: "work-in-progress course"
   repo-branch: main
   repo-url: "https://github.com/johnowhitaker/tglcourse/"
