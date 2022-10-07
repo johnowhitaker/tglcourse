@@ -24,7 +24,7 @@ def pil_to_tensor(im):
 
 def tensor_to_pil(tensor_im):
     tensor_im = tensor_im.squeeze() # In case there is a batch dimension
-    tensor_im = tensor_im.detach() # Detach from computational graph - explained in next lesson!
+    tensor_im = tensor_im.detach().cpu() # Detach from computational graph - explained in next lesson!
     tensor_im = tensor_im.permute(1, 2, 0) # Rearrange the channels
     tensor_im = tensor_im.clip(0, 1)*255 # Note that we clip to (0, 1) before scaling to (0, 255)
     im_array = np.array(tensor_im).astype(np.uint8) # Convert to int as required by PIL
