@@ -30,5 +30,6 @@ d = { 'settings': { 'branch': 'main',
                                             'tglcourse.generation_utils.calc_vgg_features': ( 'generators_and_losses.html#calc_vgg_features',
                                                                                               'tglcourse/generation_utils.py')},
             'tglcourse.utils': { 'tglcourse.utils.load_image_pil': ('pytorch_basics.html#load_image_pil', 'tglcourse/utils.py'),
+                                 'tglcourse.utils.pil_from_url': ('pytorch_basics.html#pil_from_url', 'tglcourse/utils.py'),
                                  'tglcourse.utils.pil_to_tensor': ('pytorch_basics.html#pil_to_tensor', 'tglcourse/utils.py'),
                                  'tglcourse.utils.tensor_to_pil': ('pytorch_basics.html#tensor_to_pil', 'tglcourse/utils.py')}}}
