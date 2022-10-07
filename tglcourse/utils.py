@@ -23,7 +23,7 @@ from io import BytesIO
 
 def pil_from_url(url, size=None):
     response = requests.get(url)
-    im = Image.open(BytesIO(response.content))
+    im = Image.open(BytesIO(response.content)).convert('RGB')
     if size != None:
         im = im.resize(size)
     return im
