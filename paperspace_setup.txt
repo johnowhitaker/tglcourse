@@ -1,0 +1,12 @@
+pip install tglcourse twine nbdev
+nbdev_install_hooks
+nbdev_install_quarto
+git config --global user.name 'Jonathan Whitaker'
+git config --global user.email johnowhitaker@gmail.com
+
+nbdev_prepare
+remembe to bunp version before
+nbdev_pypi
+
+TODO look at nbdev_release for conda version
+TODO maybe lower min_python in settings
