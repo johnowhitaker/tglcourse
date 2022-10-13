@@ -48,5 +48,6 @@ website:
         - 30_ethics.ipynb
       - 40_Discussions.ipynb
       - 90_Projects.ipynb
+      - 99_Library.ipynb
 
 metadata-files: [nbdev.yml]
