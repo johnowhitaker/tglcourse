@@ -43,6 +43,7 @@ website:
         contents:
         - 60_Bonus_Material_Intro.ipynb
         - 61_Datasets.ipynb
+        - 63_Scripts.ipynb
         - 62_Generators_and_Losses.ipynb
         - 30_ethics.ipynb
       - 40_Discussions.ipynb
