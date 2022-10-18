@@ -65,6 +65,7 @@ def FeedForward(dim, expansion_factor = 4, dropout = 0., dense = nn.Linear):
     )
 
 # %% ../12_DM1.ipynb 20
+#|code-fold: true
 def MLPMixer(*, image_size, channels, patch_size, dim, depth, expansion_factor = 4, expansion_factor_token = 0.5, dropout = 0.):
     """A minimal MLP Mixer stolen from lucidrain's implementation."""
     # Get image width and height (same if image_size isn't a tuple):
