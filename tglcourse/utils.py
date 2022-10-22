@@ -10,14 +10,14 @@ import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
 
-# %% ../01_PyTorch_Basics.ipynb 44
+# %% ../01_PyTorch_Basics.ipynb 47
 def load_image_pil(fn, size=None):
     im = Image.open(fn).convert('RGB')
     if size != None:
         im = im.resize(size)
     return im
 
-# %% ../01_PyTorch_Basics.ipynb 48
+# %% ../01_PyTorch_Basics.ipynb 51
 import requests
 from io import BytesIO
 
@@ -28,7 +28,7 @@ def pil_from_url(url, size=None):
         im = im.resize(size)
     return im
 
-# %% ../01_PyTorch_Basics.ipynb 54
+# %% ../01_PyTorch_Basics.ipynb 59
 def pil_to_tensor(im):
     # TODO split into multiple lines and explain
     return torch.tensor(np.array(im)).permute(2, 0, 1).unsqueeze(0)/255.0
