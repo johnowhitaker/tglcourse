@@ -121,7 +121,7 @@ class BasicUNet(nn.Module):
             x = self.act(l(x))
         return x
 
-# %% ../12_DM1.ipynb 39
+# %% ../12_DM1.ipynb 40
 #|code-fold: true
 class NoiseConditionedUNet(nn.Module):
     """Wraps a BasicUNet but adds an extra input channel for the conditioning."""
@@ -144,7 +144,7 @@ class NoiseConditionedUNet(nn.Module):
         # Now pass through the net to get the prediction as before
         return self.net(net_input)
 
-# %% ../12_DM1.ipynb 50
+# %% ../12_DM1.ipynb 51
 #|code-fold: show
 class NoiseAndClassConditionedUNet(nn.Module):
     """Wraps a BasicUNet but adds an extra input channel for the conditioning and several input 
