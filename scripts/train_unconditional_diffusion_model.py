@@ -2,6 +2,7 @@ import wandb
 import torch
 import torchvision
 import math
+import os
 import torch.nn.functional as F
 import numpy as np
 from torch import nn
@@ -40,10 +41,14 @@ def main(dataset_name = 'huggan/smithsonian_butterflies_subset', # Dataset name
          use_device = 'cuda:0', # Which device should we use? Usually cuda:0
          ema=False, # Use EMA?
          ema_beta=0.999, # EMA factor
+         output_dir = 'lesson12_diffusers_training', # Optional directory to save pipeline
+         save_model=False,
+         save_model_wandb=False,
         ):
     device = torch.device(use_device if torch.cuda.is_available() else "cpu")
     print(f'Using device: {device}') 
     
+    # Set up the model (You can edit this to try bigger models)
     model = UNet2DModel(
         sample_size=img_size,              # the target image resolution
         in_channels=3,                     # the number of input channels, 3 for RGB images
@@ -62,13 +67,17 @@ def main(dataset_name = 'huggan/smithsonian_butterflies_subset', # Dataset name
           ),
     )
     model.to(device)
+    
+    # The noise scheduler
     noise_scheduler = DDPMScheduler(num_train_timesteps=1000)
+    
+    # Our optimizer
     optimizer = torch.optim.AdamW(
         model.parameters(),
         lr=learning_rate,
     )
     
-    
+    # Data Augmentation
     augmentations = Compose(
         [
             Resize(img_size, interpolation=InterpolationMode.BILINEAR),
@@ -78,19 +87,19 @@ def main(dataset_name = 'huggan/smithsonian_butterflies_subset', # Dataset name
             Normalize([0.5], [0.5]),
         ]
     )
-
+    
+    # Data prep
     if dataset_name is not None:
         dataset = load_dataset(dataset_name, split="train")
-        
     def transforms(examples):
         images = [augmentations(image.convert("RGB")) for image in examples["image"]]
         return {"input": images}
-
     dataset.set_transform(transforms)
     train_dataloader = torch.utils.data.DataLoader(
         dataset, batch_size=batch_size, shuffle=True
     )
     
+    # Using a learning rate schedule
     lr_scheduler = get_scheduler(
         'cosine',
         optimizer=optimizer,
@@ -98,6 +107,7 @@ def main(dataset_name = 'huggan/smithsonian_butterflies_subset', # Dataset name
         num_training_steps=(len(train_dataloader) * num_epochs) #// args.gradient_accumulation_steps,
     )
     
+    # Some tracking variables
     num_update_steps_per_epoch = math.ceil(len(train_dataloader)) #/ args.gradient_accumulation_steps)
     global_step=0
     
@@ -108,9 +118,10 @@ def main(dataset_name = 'huggan/smithsonian_butterflies_subset', # Dataset name
     cfg['comments'] = comments
     cfg['dataset'] = dataset_name
 
-    # Training!
+    # Initialize logging
     wandb.init(project=wandb_project, job_type=job_type, entity=wandb_entity, config=cfg)
     
+    # Training loop
     for epoch in range(num_epochs):
         model.train()
         progress_bar = tqdm(total=num_update_steps_per_epoch)
@@ -124,26 +135,29 @@ def main(dataset_name = 'huggan/smithsonian_butterflies_subset', # Dataset name
             timesteps = torch.randint(
                 0, noise_scheduler.config.num_train_timesteps, (bsz,), device=clean_images.device
             ).long()
-
-            # Add noise to the clean images according to the noise magnitude at each timestep
-            # (this is the forward diffusion process)
+            # Add noise
             noisy_images = noise_scheduler.add_noise(clean_images, noise, timesteps)
 
             # Predict the noise residual
             noise_pred = model(noisy_images, timesteps).sample
+            
+            # Calcloss
             loss = F.mse_loss(noise_pred, noise)
+            
+            # Update params and step lr schedule
             loss.backward()
             optimizer.step()
             lr_scheduler.step()
             optimizer.zero_grad()
 
+            # Update progress bar and log
             progress_bar.update(1)
             global_step += 1
-
             logs = {"loss": loss.detach().item(), "lr": lr_scheduler.get_last_lr()[0], "global_step": global_step}
             progress_bar.set_postfix(**logs)
             logs['epoch'] = epoch
             if global_step%log_every==0: wandb.log(logs, step=global_step)
+            
         progress_bar.close()
 
         # Generate sample images for visual inspection
@@ -163,14 +177,19 @@ def main(dataset_name = 'huggan/smithsonian_butterflies_subset', # Dataset name
             # Turn them into a grid
             wandb.log({'Image':wandb.Image(preview_im)}, step=global_step)
             
-
-        # if epoch % args.save_model_epochs == 0 or epoch == args.num_epochs - 1:
-        #     # save the model
-        #     pipeline.save_pretrained(args.output_dir)
-        #     if args.push_to_hub:
-        #         repo.push_to_hub(commit_message=f"Epoch {epoch}", blocking=False)
+        
+        # Save after final epoch
+        if save_model and epoch == num_epochs - 1:
+            print(f'Saving model to {output_dir}')
+            os.makedirs(output_dir)
+            pipeline = DDPMPipeline(
+                    unet=model,
+                    scheduler=noise_scheduler,
+            )
+            pipeline.save_pretrained(output_dir)
     
     wandb.finish()
+    
     # TODO save model
     # TODO push to hub?
     # TODO smaller model or model variants?
