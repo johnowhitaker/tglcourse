@@ -24,15 +24,9 @@ join study groups or chat about all things generative. That’s also the
 place to go for notifications of live lesson walkthroughs and course
 updates.
 
-<div>
-
-[![](https://github.com/johnowhitaker/tglcourse/actions/workflows/test.yaml/badge.svg)](https://github.com/johnowhitaker/tglcourse/actions/workflows/test.yaml)
-
-</div>
-
 ![](index_files/figure-gfm/cell-2-output-1.png)
 
-### The plan and TODOs
+### The Plan
 
 The idea is to have a core curriculum building up to an understanding of
 key generative modelling techniques, split into three rough sections.
@@ -56,64 +50,27 @@ place to everyone’s projects and some prizes for the best.
 
 This table has a rough status on the main lessons.
 
-| Lesson                              | Description                                                                                                                                      | TODOs                                                                          | Status           |
-|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|------------------|
-| Lesson 1: PyTorch Basics            | Intro to PT, tensor manipulation, images as tensors, LeastAverageImage exercise                                                                  | Video, tidy                                                                    | Rough Draft Done |
-| Lesson 2: Optimization              | Intro to GD, optimization examples exercise                                                                                                      | Video, Optimize with gen+loss without explaining                               | Rough Draft Done |
-| Lesson 3: Building NNs              | nn.Module, building blocks, CNNs                                                                                                                 | Video, tidy, move extras to bonus notebooks, redo final section                | Rough Draft Done |
-| Lesson 4: Learning Representations  | What do networks learn, style transfer                                                                                                           | Video, tidy, …                                                                 | WIP              |
-| Lesson 5: CLIP                      | Demo use as a loss function, video deep dive into VQGAN notebooks                                                                                | Rough Draft Done                                                               |                  |
-| Lesson 6: Generative Modelling      | VAE part, latent walks, PCA                                                                                                                      | WIP                                                                            |                  |
-| Lesson 7: GANs 1                    | Intro to GANs, DC GAN, Conditioning                                                                                                              | everything                                                                     | Not Started      |
-| Lesson 8: GANs 2                    | GAN training tricks, NOGAN, using modern GANs, VQGAN                                                                                             | everything                                                                     | Not Started      |
-| Lesson 9: Sequence Modelling Intro  | idea, language modelling concept, transformer demo                                                                                               | char level shakespeare daemo                                                   | WIP              |
-| Lesson 10: Transformers             | Intro to transformes, attention, comparing to lstm, reading minGPT                                                                               | source resources, comparison script + report                                   | Not Started      |
-| Lesson 11: Everythign is a sequence | Show whistlegen, protein, VQGAN, parti…                                                                                                          | everything                                                                     | Not Started      |
-| Lesson 12: DM 1                     | Intro to diffusion models, toy example, comparison to DDPM                                                                                       | Video, tidy, second half, logs of my version training, better unet replacement | Rough Draft Done |
-| Lesson 13: DM2                      | Conditioning, CFG, guiding, sampling, better training                                                                                            | Saving models, training script, prose                                          | WIP              |
-| Lesson 14: DM3                      | SD deep dive                                                                                                                                     | link to video run-through or record smaller videos                             | Rough Draft Done |
-| Lesson 15: DM4                      | Other modalities - ideally demo class-conditioned audio generation. Might not be done by the time the course launches but would be nice to have. | wavenet style diffusion for birdcalls, look at video stuff                     | Not Started      |
-| Lesson 16: Going Further            | Finding your niche, exploring less common areas                                                                                                  | TODO                                                                           | Not Started      |
+| Lesson                              | Description                                                                                                                                      | Status           |
+|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|------------------|
+| Lesson 1: PyTorch Basics            | Intro to PT, tensor manipulation, images as tensors, LeastAverageImage exercise                                                                  | Rough Draft Done |
+| Lesson 2: Optimization              | Intro to GD, optimization examples exercise                                                                                                      | Rough Draft Done |
+| Lesson 3: Building NNs              | nn.Module, building blocks, CNNs                                                                                                                 | Rough Draft Done |
+| Lesson 4: Learning Representations  | What do networks learn, style transfer                                                                                                           | WIP              |
+| Lesson 5: CLIP                      | Demo use as a loss function, video deep dive into VQGAN notebooks                                                                                | Rough Draft Done |
+| Lesson 6: Generative Modelling      | VAE part, latent walks, PCA                                                                                                                      | WIP              |
+| Lesson 7: GANs 1                    | Intro to GANs, DC GAN, Conditioning                                                                                                              | WIP              |
+| Lesson 8: GANs 2                    | GAN training tricks, NOGAN, using modern GANs, VQGAN                                                                                             | Not Started      |
+| Lesson 9: Sequence Modelling Intro  | idea, language modelling concept, transformer demo                                                                                               | WIP              |
+| Lesson 10: Transformers             | Intro to transformes, attention, comparing to lstm, reading minGPT                                                                               | Not Started      |
+| Lesson 11: Everythign is a sequence | Show whistlegen, protein, VQGAN, parti…                                                                                                          | Not Started      |
+| Lesson 12: DM 1                     | Intro to diffusion models, toy example, comparison to DDPM                                                                                       | Rough Draft Done |
+| Lesson 13: DM2                      | Conditioning, CFG, guiding, sampling, better training                                                                                            | WIP              |
+| Lesson 14: DM3                      | SD deep dive                                                                                                                                     | Rough Draft Done |
+| Lesson 15: DM4                      | Other modalities - ideally demo class-conditioned audio generation. Might not be done by the time the course launches but would be nice to have. | WIP              |
+| Lesson 16: Going Further            | Finding your niche, exploring less common areas                                                                                                  | WIP              |
 
-General TODOs - Create a page for project explanations + figure out
-submission info. - More ethics callouts at the end of lessons - Pick a
-cloud for cloud tutorial - Figure out plan for datasets - Figure out
-where smaller ‘bonus’ things like paper readings or topical deep-dives
-go. Do we add a blog? - Make the website pretty - Generate a bunch of
-images - Notebook to document the library
-
-### Planned Bonus Notebooks:
-
-- Datasets and Dataloaders Intro (also defines data util funcs for the
-  rest of the course)
-- Experiment Tracking (eg W&B)
-- Pretrained networks and transfer learning
-- Fine-tuning existing models
-- Working with GPUs? Multi-GPU or TPU training?
-- Sharing demos w/ Gradio
-- Managing cloud machines
-- Dataloaders deep dive, streaming data
-- Navigating other codebases
-- Version control and CI (+ NBDev)
-- “Text inversion” training (https://arxiv.org/pdf/2208.01618.pdf)
-- “prompt to prompt editing” https://arxiv.org/pdf/2208.01626.pdf or a
-  more general overview of different editing strategies
-- Lots of paper readings / sumaries
-- Neural cellular automata
-- Evolutionary algorithms
-
-### Projects:
-
-- Create a custom generation pipeline by combining different generators
-  and loss functions
-- Train a GAN, explore hyperparameters
-- Fine-tune a diffusion model on a custom dataset and share it with the
-  community
-- Create and share a final project, including a report and demo
-
-Guest discussions: as many as we can :)
-
-Paper explainers: as many as we can :)
+CI status:
+[![](https://github.com/johnowhitaker/tglcourse/actions/workflows/test.yaml/badge.svg)](https://github.com/johnowhitaker/tglcourse/actions/workflows/test.yaml)
 
 Page stats: Total Hits:
 [![HitCount](https://hits.dwyl.com/johnowhitaker/tglcourse.svg?style=flat-square&show=unique)](http://hits.dwyl.com/johnowhitaker/tglcourse)
