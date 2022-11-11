@@ -3,7 +3,7 @@ project:
 
 format:
   html:
-    theme: colar
+    theme: cosmo
     css: styles.css
     toc: true
     
@@ -19,6 +19,11 @@ website:
   navbar:
     background: primary
     search: true
+    right:
+      - icon: github
+        href: "https://github.com/johnowhitaker/tglcourse"
+      - icon: discord
+        href: "https://discord.gg/vSjhr8xb4g"
   sidebar:
     style: floating
     collapse-level: 1
