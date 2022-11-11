@@ -95,15 +95,15 @@ projects and fun community activities to get involved in with that one
 too. <br> - ‘Can genereative landscape be real?’: Yes, if you subscribe
 to [David Chalmers ‘simulation
 realism’](https://www.thephilosopher1923.org/post/taking-simulation-seriously)
-;)<br> - ‘Will it include stable diffusion?’: Yes, see lesson 14 - ‘Will
-we learn how to adapt these method to 3d?’: At some point I’d love to
-add more 3D related content - stay tuned for bonus notebooks once the
-craziness of the course launch calms down. - ‘I hope this includes
+;)<br> - ‘Will it include stable diffusion?’: Yes, see lesson 14<br> -
+‘Will we learn how to adapt these method to 3d?’: At some point I’d love
+to add more 3D related content - stay tuned for bonus notebooks once the
+craziness of the course launch calms down.<br> - ‘I hope this includes
 generating text!’: It does! Lessons 9 - 11 deal with modelling
 sequences, and should set you up with everything you need to make models
-which can spew out AI-generated gibberish all day long. - ‘My question
-isn’t in the FAQs?’: OK, so I made this one up. But if you have a
-burning question, send it to me and I’ll add it here.
+which can spew out AI-generated gibberish all day long.<br> - ‘My
+question isn’t in the FAQs?’: OK, so I made this one up. But if you have
+a burning question, send it to me and I’ll add it here.<br>
 
 CI status:
 [![](https://github.com/johnowhitaker/tglcourse/actions/workflows/test.yaml/badge.svg)](https://github.com/johnowhitaker/tglcourse/actions/workflows/test.yaml)
