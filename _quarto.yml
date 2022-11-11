@@ -3,9 +3,14 @@ project:
 
 format:
   html:
-    theme: cosmo
+    theme: colar
     css: styles.css
     toc: true
+    
+default_badges:
+  github: true
+  binder: true
+  colab: true
 
 website:
   twitter-card: true
