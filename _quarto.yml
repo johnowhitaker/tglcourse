@@ -45,6 +45,7 @@ website:
         - 61_Datasets.ipynb
         - 63_Scripts.ipynb
         - 62_Generators_and_Losses.ipynb
+        - 65_Interfaces_With_Gradio.ipynb
         - 64_Finetuning_Pretrained_Models.ipynb
         - 30_ethics.ipynb
       - 40_Discussions.ipynb
