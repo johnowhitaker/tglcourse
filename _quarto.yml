@@ -24,6 +24,9 @@ website:
         href: "https://github.com/johnowhitaker/tglcourse"
       - icon: discord
         href: "https://discord.gg/vSjhr8xb4g"
+      - icon: currency-dollar
+        href: "https://www.patreon.com/johnowhitaker"
+        
   sidebar:
     style: floating
     collapse-level: 1
