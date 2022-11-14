@@ -28,10 +28,13 @@ def pil_from_url(url, size=None):
         im = im.resize(size)
     return im
 
-# %% ../01_PyTorch_Basics.ipynb 60
+# %% ../01_PyTorch_Basics.ipynb 64
 def pil_to_tensor(im):
-    # TODO split into multiple lines and explain
-    return torch.tensor(np.array(im)).permute(2, 0, 1).unsqueeze(0)/255.0
+    im = np.array(im) # To numpy array
+    im = torch.tensor(im) # To tensor
+    im = im.permute(2, 0, 1) # Rearrange dimensions
+    im = im.unsqueeze(0) # Add batch dimension first
+    return im/255.0 # Scale down to (0, 1)
 
 def tensor_to_pil(tensor_im):
     tensor_im = tensor_im.squeeze() # In case there is a batch dimension
