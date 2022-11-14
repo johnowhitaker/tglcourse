@@ -58,7 +58,7 @@ This table has a rough status on the main lessons.
 
 | Lesson                              | Description                                                                                                                                      | Status           |
 |-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|------------------|
-| Lesson 1: PyTorch Basics            | Intro to PT, tensor manipulation, images as tensors, LeastAverageImage exercise                                                                  | Rough Draft Done |
+| Lesson 1: PyTorch Basics            | Intro to PT, tensor manipulation, images as tensors, LeastAverageImage exercise                                                                  | Done             |
 | Lesson 2: Optimization              | Intro to GD, optimization examples exercise                                                                                                      | Rough Draft Done |
 | Lesson 3: Building NNs              | nn.Module, building blocks, CNNs                                                                                                                 | Rough Draft Done |
 | Lesson 4: Learning Representations  | What do networks learn, style transfer                                                                                                           | WIP              |
