@@ -77,31 +77,31 @@ This table has a rough status on the main lessons.
 
 ### FAQs
 
-Some course-related questions that have tricked in: - ‘Any
+Some course-related questions that have tricked in: <br> + ‘Any
 prerequisites?’: If you’re comfortable with a bit of Python and using
 Jupyter Notebooks you should be ready to take this course. No prior deep
 learning knowledge is assumed, and although we will dive fairly deep
 fairly quickly I’ve tried to link lots of resources wherever possible.
-<br> - ‘How long is the course?’: There are 15 core lessons plus a
+<br> + ‘How long is the course?’: There are 15 core lessons plus a
 number of bonus notebooks. You can take them at whatever pace you find
 enjoyable, or join in with a study group on Discord to work through one
-a week.<br> - ‘Does the HuggingFace Diffusion Model Class supercede
+a week.<br> + ‘Does the HuggingFace Diffusion Model Class supercede
 this?’: I’ve teamed up with HF to help build their [diffusion model
 class](https://github.com/huggingface/diffusion-models-class), sharing a
 lot of material between it and this course. Both will have unique things
 to add - I’d recommend signing up for theirs even if you’re working
 through ‘The Generative Landscape’ as well, since there will be extra
 projects and fun community activities to get involved in with that one
-too. <br> - ‘Can genereative landscape be real?’: Yes, if you subscribe
+too. <br> + ‘Can genereative landscape be real?’: Yes, if you subscribe
 to [David Chalmers ‘simulation
 realism’](https://www.thephilosopher1923.org/post/taking-simulation-seriously)
-;)<br> - ‘Will it include stable diffusion?’: Yes, see lesson 14<br> -
+;)<br> + ‘Will it include stable diffusion?’: Yes, see lesson 14<br> +
 ‘Will we learn how to adapt these method to 3d?’: At some point I’d love
 to add more 3D related content - stay tuned for bonus notebooks once the
-craziness of the course launch calms down.<br> - ‘I hope this includes
+craziness of the course launch calms down.<br> + ‘I hope this includes
 generating text!’: It does! Lessons 9 - 11 deal with modelling
 sequences, and should set you up with everything you need to make models
-which can spew out AI-generated gibberish all day long.<br> - ‘My
+which can spew out AI-generated gibberish all day long.<br> +‘My
 question isn’t in the FAQs?’: OK, so I made this one up. But if you have
 a burning question, send it to me and I’ll add it here.<br>
 
