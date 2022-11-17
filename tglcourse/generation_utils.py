@@ -67,8 +67,8 @@ class ImStackGenerator(nn.Module):
 # %% ../62_Generators_and_Losses.ipynb 36
 # Extracting features from an image using this pretrained model:
 def calc_vgg_features(vgg16, imgs, use_layers=[1, 6, 11, 18, 25]):
-  mean = torch.tensor([0.485, 0.456, 0.406])[:,None,None].to(device)
-  std = torch.tensor([0.229, 0.224, 0.225])[:,None,None].to(device)
+  mean = torch.tensor([0.485, 0.456, 0.406])[:,None,None].to(imgs.device)
+  std = torch.tensor([0.229, 0.224, 0.225])[:,None,None].to(imgs.device)
   x = (imgs-mean) / std
   b, c, h, w = x.shape
   features = [x.reshape(b, c, h*w)] # This reshape is for convenience later
@@ -82,8 +82,10 @@ def calc_vgg_features(vgg16, imgs, use_layers=[1, 6, 11, 18, 25]):
 # %% ../62_Generators_and_Losses.ipynb 41
 class ContentLossToTarget(nn.Module):
     """ Perceptual loss between input and target, resizing if needed, based on vgg16"""
-    def __init__(self, target, vgg16=None, size=128, content_layers = [14, 19]):
+    def __init__(self, target, vgg16=None, size=128, content_layers = [14, 19], device=None):
         super(ContentLossToTarget, self).__init__()
+        if device==None:
+            device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         self.resize = T.Resize(size)
         self.target = self.resize(target) # resize target image to size
         self.content_layers = content_layers
@@ -108,8 +110,11 @@ class ContentLossToTarget(nn.Module):
 # %% ../62_Generators_and_Losses.ipynb 46
 class OTStyleLossToTarget(nn.Module):
   """ Optimal Transport Loss for style comparison"""
-  def __init__(self, target, vgg16=None, size=128, style_layers = [1, 6, 11, 18, 25], scale_factor=1e-5):
+  def __init__(self, target, vgg16=None, size=128, style_layers = [1, 6, 11, 18, 25], scale_factor=1e-5, device=None):
     super(OTStyleLossToTarget, self).__init__()
+    if device==None:
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    self.device = device
     self.resize = T.Resize(size)
     self.target = self.resize(target) # resize target image to size
     self.style_layers = style_layers
@@ -127,7 +132,7 @@ class OTStyleLossToTarget(nn.Module):
 
   def ot_loss(self, source, target, proj_n=32):
     ch, n = source.shape[-2:]
-    projs = F.normalize(torch.randn(ch, proj_n).to(device), dim=0)
+    projs = F.normalize(torch.randn(ch, proj_n).to(self.device), dim=0)
     source_proj = self.project_sort(source, projs)
     target_proj = self.project_sort(target, projs)
     target_interp = F.interpolate(target_proj, n, mode='nearest')
@@ -143,8 +148,10 @@ class OTStyleLossToTarget(nn.Module):
 # %% ../62_Generators_and_Losses.ipynb 48
 class GramStyleLossToTarget(nn.Module):
   """ Gram matrix based style loss"""
-  def __init__(self, target, vgg16=None, size=128, style_layers = [1, 6, 11, 18, 25], scale_factor=0.1):
+  def __init__(self, target, vgg16=None, size=128, style_layers = [1, 6, 11, 18, 25], scale_factor=0.1, device=None):
     super(GramStyleLossToTarget, self).__init__()
+    if device==None:
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     self.resize = T.Resize(size)
     self.target = self.resize(target) # resize target image to size
     self.style_layers = style_layers
@@ -177,8 +184,10 @@ class GramStyleLossToTarget(nn.Module):
 # %% ../62_Generators_and_Losses.ipynb 50
 class VincentStyleLossToTarget(nn.Module):
   """ Attempting to copy  """
-  def __init__(self, target, vgg16=None, size=128, style_layers = [1, 6, 11, 18, 25], scale_factor=1e-5):
+  def __init__(self, target, vgg16=None, size=128, style_layers = [1, 6, 11, 18, 25], scale_factor=1e-5, device=None):
     super(VincentStyleLossToTarget, self).__init__()
+    if device==None:
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     self.resize = T.Resize(size)
     self.target = self.resize(target) # resize target image to size
     self.style_layers = style_layers
