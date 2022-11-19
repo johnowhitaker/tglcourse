@@ -22,7 +22,7 @@ join study groups or chat about all things generative. That’s also the
 place to go for notifications of live lesson walkthroughs and course
 updates.
 
-![](index_files/figure-commonmark/cell-2-output-1.png)
+![](index_files/figure-gfm/cell-2-output-1.png)
 
 Check out the [Getting Started](./00_Getting_Started.ipynb) page for an
 overview of the course and more information on things like study
