@@ -43,6 +43,7 @@ website:
         - 05_CLIP.ipynb
         - 06_generative_1.ipynb
         - 12_DM1.ipynb
+        - 13_DM2.ipynb
         - 14_DM3.ipynb
       - section: Bonus Material
         contents:
