@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.280">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>tglcourse - Fine-Tuning, Guidance and Conditioning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="tglcourse - Fine-Tuning, Guidance and Conditioning">
+<meta property="og:description" content="This is the second ‘unit’ of the HuggingFace diffusion models course.">
+<meta property="og:site-name" content="tglcourse">
+<meta name="twitter:title" content="tglcourse - Fine-Tuning, Guidance and Conditioning">
+<meta name="twitter:description" content="This is the second ‘unit’ of the HuggingFace diffusion models course.">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">tglcourse</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/johnowhitaker/tglcourse"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://discord.gg/vSjhr8xb4g"><i class="bi bi-discord" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.patreon.com/johnowhitaker"><i class="bi bi-currency-dollar" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Fine-Tuning, Guidance and Conditioning</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">The Generative Landscape</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting_started.html" class="sidebar-item-text sidebar-link">Getting Started</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Lessons</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pytorch_basics.html" class="sidebar-item-text sidebar-link">Lesson 1: PyTorch Basics</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./optimization.html" class="sidebar-item-text sidebar-link">Lesson 2: Gradient Descent and Optimization</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./building_nns.html" class="sidebar-item-text sidebar-link">Lesson 3: Neural Networks and Loss Functions</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./representations.html" class="sidebar-item-text sidebar-link">Lesson 4: Learning Representations + Style Transfer</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./clip.html" class="sidebar-item-text sidebar-link">Lesson 5: Exploring Multiple Modalities with CLIP</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./generative_1.html" class="sidebar-item-text sidebar-link">Lesson 6 - Generative Modelling Intro (AutoEncoders)</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dm1.html" class="sidebar-item-text sidebar-link">An Introduction to Diffusion Models</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dm2.html" class="sidebar-item-text sidebar-link active">Fine-Tuning, Guidance and Conditioning</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dm3.html" class="sidebar-item-text sidebar-link">Stable Diffusion</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">Bonus Material</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bonus_material_intro.html" class="sidebar-item-text sidebar-link">Bonus Material</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scripts.html" class="sidebar-item-text sidebar-link">Creating Scripts</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./generators_and_losses.html" class="sidebar-item-text sidebar-link">Fun with Generators and Losses</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interfaces_with_gradio.html" class="sidebar-item-text sidebar-link">Creating Quick Interfaces with Gradio</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./finetuning_pretrained_models.html" class="sidebar-item-text sidebar-link">Fine-Tuning Pretrained Networks for Image Classification</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./discussions.html" class="sidebar-item-text sidebar-link">Discussions</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./projects.html" class="sidebar-item-text sidebar-link">Projects</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./library.html" class="sidebar-item-text sidebar-link">The Library</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#get-started" id="toc-get-started" class="nav-link active" data-scroll-target="#get-started">Get Started</a></li>
+  <li><a href="#fine-tuning" id="toc-fine-tuning" class="nav-link" data-scroll-target="#fine-tuning">Fine-Tuning</a></li>
+  <li><a href="#guidance" id="toc-guidance" class="nav-link" data-scroll-target="#guidance">Guidance</a></li>
+  <li><a href="#conditioning" id="toc-conditioning" class="nav-link" data-scroll-target="#conditioning">Conditioning</a></li>
+  <li><a href="#hands-on-notebook" id="toc-hands-on-notebook" class="nav-link" data-scroll-target="#hands-on-notebook">Hands-On Notebook</a></li>
+  <li><a href="#project-time" id="toc-project-time" class="nav-link" data-scroll-target="#project-time">Project Time</a></li>
+  <li><a href="#some-additional-resources" id="toc-some-additional-resources" class="nav-link" data-scroll-target="#some-additional-resources">Some Additional Resources</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/johnowhitaker/tglcourse/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Fine-Tuning, Guidance and Conditioning</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<p>This is <a href="https://github.com/huggingface/diffusion-models-class/edit/main/unit2/README.md">the second ‘unit’ of the HuggingFace diffusion models course</a>.</p>
+<p>In this lesson, you will learn how to use and adapt pre-trained diffusion models in new ways. You will also see how we can create diffusion models that take additional inputs as <strong>conditioning</strong> to control the generation process.</p>
+<section id="get-started" class="level2">
+<h2 class="anchored" data-anchor-id="get-started">Get Started</h2>
+<p>Here are the steps for this unit: - Read through the material below for an overview of the key ideas of this unit - Check out the <em><strong>Fine-tuning and Guidance</strong></em> notebook to fine-tune an existing diffusion model on a new dataset using the 🤗 Diffusers library and to modify the sampling procedure using guidance - Follow the example in the notebook to share a Gradio demo for your custom model - (Optional) Check out the <em><strong>Class-conditioned Diffusion Model Example</strong></em> notebook to see how we can add additional control to the generation process. - (Optional) Check out <a href="https://www.youtube.com/watch?v=mY20iKOQ2zw">the video below</a> for an informal run-through of the material in this unit.</p>
+<div class="cell">
+<div class="cell-output cell-output-display">
+
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/mY20iKOQ2zw" frameborder="0" allowfullscreen=""></iframe>
+        
+</div>
+</div>
+</section>
+<section id="fine-tuning" class="level2">
+<h2 class="anchored" data-anchor-id="fine-tuning">Fine-Tuning</h2>
+<p>As you may have seen in Unit 1, training diffusion models from scratch can be time-consuming! Especially as we push to higher resolutions, the time and data required to train a model from scratch can become impractical. Fortunately, there is a solution: begin with a model that has already been trained! This way we start from a model that has already learned to denoise images of some kind, and the hope is that this provides a better starting point than beginning from a randomly initialized model.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://api.wandb.ai/files/johnowhitaker/dm_finetune/2upaa341/media/images/Sample%20generations_501_d980e7fe082aec0dfc49.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Example images generated with a model trained on LSUN Bedrooms and fine-tuned for 500 steps on WikiArt</figcaption><p></p>
+</figure>
+</div>
+<p>Fine-tuning typically works best if the new data somewhat resembles the base model’s original training data (for example, beginning with a model trained on faces is probably a good idea if you’re trying to generate cartoon faces) but surprisingly the benefits persist even if the domain is changed quite drastically. The image above is generated from a <a href="https://huggingface.co/google/ddpm-bedroom-256">model trained on the LSUN Bedrooms dataset</a> and fine-tuned for 500 steps on <a href="https://huggingface.co/datasets/huggan/wikiart">the WikiArt dataset</a>. The <a href="https://github.com/huggingface/diffusion-models-class/blob/main/unit2/finetune_model.py">training script</a> is included for reference alongside the notebooks for this unit.</p>
+</section>
+<section id="guidance" class="level2">
+<h2 class="anchored" data-anchor-id="guidance">Guidance</h2>
+<p>Unconditional models don’t give much control over what is generated. We can train a conditional model (more on that in the next section) that takes additional inputs to help steer the generation process, but what if we already have a trained unconditional model we’d like to use? Enter guidance, a process by which the model predictions at each step in the generation process are evaluated against some guidance function and modified such that the final generated image is more to our liking.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://github.com/huggingface/diffusion-models-class/raw/main/unit2/guidance_eg.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">guidance example image</figcaption><p></p>
+</figure>
+</div>
+<p>This guidance function can be almost anything, making this a powerful technique! In the notebook, we build up from a simple example (controlling the color, as illustrated in the example output above) to one utilizing a powerful pre-trained model called CLIP which lets us guide generation based on a text description.</p>
+</section>
+<section id="conditioning" class="level2">
+<h2 class="anchored" data-anchor-id="conditioning">Conditioning</h2>
+<p>Guidance is a great way to get some additional mileage from an unconditional diffusion model, but if we have additional information (such as a class label or an image caption) available during training then we can also feed this to the model for it to use as it makes its predictions. In doing so, we create a <strong>conditional</strong> model, which we can control at inference time by controlling what is fed in as conditioning. The notebook shows an example of a class-conditioned model which learns to generate images according to a class label.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://github.com/huggingface/diffusion-models-class/raw/main/unit2/conditional_digit_generation.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">conditioning example</figcaption><p></p>
+</figure>
+</div>
+<p>There are a number of ways to pass in this conditioning information, such as - Feeding it in as additional channels in the input to the UNet. This is often used when the conditioning information is the same shape as the image, such as a segmentation mask, a depth map or a blurry version of the image (in the case of a restoration/superresolution model). It does work for other types of conditioning too. For example, in the notebook, the class label is mapped to an embedding and then expanded to be the same width and height as the input image so that it can be fed in as additional channels. - Creating an embedding and then projecting it down to a size that matches the number of channels at the output of one or more internal layers of the UNet, and then adding it to those outputs. This is how the timestep conditioning is handled, for example. The output of each Resnet block has a projected timestep embedding added to it. This is useful when you have a vector such as a CLIP image embedding as your conditioning information. A notable example is the <a href="https://huggingface.co/spaces/lambdalabs/stable-diffusion-image-variations">‘Image Variations’ version of Stable Diffusion</a> which does exactly this. - Adding cross-attention layers that can ‘attend’ to a sequence passed in as conditioning. This is most useful when the conditioning is in the form of some text - the text is mapped to a sequence of embeddings using a transformer model, and then cross-attention layers in the UNet are used to incorporate this information into the denoising path. We’ll see this in action in Unit 3 as we examine how Stable Diffusion handles text conditioning.</p>
+</section>
+<section id="hands-on-notebook" class="level2">
+<h2 class="anchored" data-anchor-id="hands-on-notebook">Hands-On Notebook</h2>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Chapter</th>
+<th style="text-align: left;">Colab</th>
+<th style="text-align: left;">Kaggle</th>
+<th style="text-align: left;">Gradient</th>
+<th style="text-align: left;">Studio Lab</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Fine-tuning and Guidance</td>
+<td style="text-align: left;"><a href="https://colab.research.google.com/github/huggingface/diffusion-models-class/blob/main/unit2/01_finetuning_and_guidance.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid" alt="Open In Colab"></a></td>
+<td style="text-align: left;"><a href="https://kaggle.com/kernels/welcome?src=https://github.com/huggingface/diffusion-models-class/blob/main/unit2/01_finetuning_and_guidance.ipynb"><img src="https://kaggle.com/static/images/open-in-kaggle.svg" class="img-fluid" alt="Kaggle"></a></td>
+<td style="text-align: left;"><a href="https://console.paperspace.com/github/huggingface/diffusion-models-class/blob/main/unit2/01_finetuning_and_guidance.ipynb"><img src="https://assets.paperspace.io/img/gradient-badge.svg" class="img-fluid" alt="Gradient"></a></td>
+<td style="text-align: left;"><a href="https://studiolab.sagemaker.aws/import/github/huggingface/diffusion-models-class/blob/main/unit2/01_finetuning_and_guidance.ipynb"><img src="https://studiolab.sagemaker.aws/studiolab.svg" class="img-fluid" alt="Open In SageMaker Studio Lab"></a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Class-conditioned Diffusion Model Example</td>
+<td style="text-align: left;"><a href="https://colab.research.google.com/github/huggingface/diffusion-models-class/blob/main/unit2/02_class_conditioned_diffusion_model_example.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid" alt="Open In Colab"></a></td>
+<td style="text-align: left;"><a href="https://kaggle.com/kernels/welcome?src=https://github.com/huggingface/diffusion-models-class/blob/main/unit2/02_class_conditioned_diffusion_model_example.ipynb"><img src="https://kaggle.com/static/images/open-in-kaggle.svg" class="img-fluid" alt="Kaggle"></a></td>
+<td style="text-align: left;"><a href="https://console.paperspace.com/github/huggingface/diffusion-models-class/blob/main/unit2/02_class_conditioned_diffusion_model_example.ipynb"><img src="https://assets.paperspace.io/img/gradient-badge.svg" class="img-fluid" alt="Gradient"></a></td>
+<td style="text-align: left;"><a href="https://studiolab.sagemaker.aws/import/github/huggingface/diffusion-models-class/blob/main/unit2/02_class_conditioned_diffusion_model_example.ipynb"><img src="https://studiolab.sagemaker.aws/studiolab.svg" class="img-fluid" alt="Open In SageMaker Studio Lab"></a></td>
+</tr>
+</tbody>
+</table>
+<p>At this point, you know enough to get started with the accompanying notebooks! Open them in your platform of choice using the links above. Fine-tuning is quite computationally intensive, so if you’re using Kaggle or Google Colab make sure you set the runtime type to ‘GPU’ for the best results.</p>
+<p>The bulk of the material is in <em><strong>Fine-tuning and Guidance</strong></em>, where we explore these two topics through worked examples. The notebook shows how you can fine-tune an existing model on new data, add guidance, and share the result as a Gradio demo. There is an accompanying script (<a href="https://github.com/huggingface/diffusion-models-class/blob/main/unit2/finetune_model.py">finetune_model.py</a>) that makes it easy to experiment with different fine-tuning settings, and [an <a href="https://huggingface.co/spaces/johnowhitaker/color-guided-wikiart-diffusion">example space</a> that you can use as a template for sharing your own demo on 🤗 Spaces.</p>
+<p>In the <em><strong>Class-conditioned Diffusion Model Example</strong></em>, we show a brief worked example of creating a diffusion model conditioned on class labels using the MNIST dataset. The focus is on demonstrating the core idea as simply as possible: by giving the model extra information about what it is supposed to be denoising, we can later control what kinds of images are generated at inference time.</p>
+</section>
+<section id="project-time" class="level2">
+<h2 class="anchored" data-anchor-id="project-time">Project Time</h2>
+<p>Following the examples in the <em><strong>Fine-tuning and Guidance</strong></em> notebook, fine-tune your own model or pick an existing model and create a Gradio demo to showcase your new guidance skills. Don’t forget to share your demo on Discord, Twitter etc so we can admire your work!</p>
+</section>
+<section id="some-additional-resources" class="level2">
+<h2 class="anchored" data-anchor-id="some-additional-resources">Some Additional Resources</h2>
+<p><a href="https://arxiv.org/abs/2010.02502">Denoising Diffusion Implicit Models</a> - Introduced the DDIM sampling method (used by DDIMScheduler)</p>
+<p><a href="https://arxiv.org/abs/2112.10741">GLIDE: Towards Photorealistic Image Generation and Editing with Text-Guided Diffusion Models</a> - Introduced methods for conditioning diffusion models on text</p>
+<p><a href="https://arxiv.org/abs/2211.01324">eDiffi: Text-to-Image Diffusion Models with an Ensemble of Expert Denoisers</a> - Shows how many different kinds of conditioning can be used together to give even more control over the kinds of samples generated</p>
+<p>Found more great resources? Let us know and we’ll add them to this list.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

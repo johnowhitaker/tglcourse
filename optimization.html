@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.280">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>tglcourse - Lesson 2: Gradient Descent and Optimization</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="tglcourse - Lesson 2: Gradient Descent and Optimization">
+<meta property="og:description" content="If you’d prefer a much longer video with more explanation, here is a fairly rough live notebook walkthrough.">
+<meta property="og:site-name" content="tglcourse">
+<meta name="twitter:title" content="tglcourse - Lesson 2: Gradient Descent and Optimization">
+<meta name="twitter:description" content="If you’d prefer a much longer video with more explanation, here is a fairly rough live notebook walkthrough.">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">tglcourse</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/johnowhitaker/tglcourse"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://discord.gg/vSjhr8xb4g"><i class="bi bi-discord" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.patreon.com/johnowhitaker"><i class="bi bi-currency-dollar" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Lesson 2: Gradient Descent and Optimization</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">The Generative Landscape</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting_started.html" class="sidebar-item-text sidebar-link">Getting Started</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Lessons</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pytorch_basics.html" class="sidebar-item-text sidebar-link">Lesson 1: PyTorch Basics</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./optimization.html" class="sidebar-item-text sidebar-link active">Lesson 2: Gradient Descent and Optimization</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./building_nns.html" class="sidebar-item-text sidebar-link">Lesson 3: Neural Networks and Loss Functions</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./representations.html" class="sidebar-item-text sidebar-link">Lesson 4: Learning Representations + Style Transfer</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./clip.html" class="sidebar-item-text sidebar-link">Lesson 5: Exploring Multiple Modalities with CLIP</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./generative_1.html" class="sidebar-item-text sidebar-link">Lesson 6 - Generative Modelling Intro (AutoEncoders)</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dm1.html" class="sidebar-item-text sidebar-link">An Introduction to Diffusion Models</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dm2.html" class="sidebar-item-text sidebar-link">Fine-Tuning, Guidance and Conditioning</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dm3.html" class="sidebar-item-text sidebar-link">Stable Diffusion</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">Bonus Material</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bonus_material_intro.html" class="sidebar-item-text sidebar-link">Bonus Material</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scripts.html" class="sidebar-item-text sidebar-link">Creating Scripts</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./generators_and_losses.html" class="sidebar-item-text sidebar-link">Fun with Generators and Losses</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interfaces_with_gradio.html" class="sidebar-item-text sidebar-link">Creating Quick Interfaces with Gradio</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./finetuning_pretrained_models.html" class="sidebar-item-text sidebar-link">Fine-Tuning Pretrained Networks for Image Classification</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./discussions.html" class="sidebar-item-text sidebar-link">Discussions</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./projects.html" class="sidebar-item-text sidebar-link">Projects</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./library.html" class="sidebar-item-text sidebar-link">The Library</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#gradient-descent" id="toc-gradient-descent" class="nav-link active" data-scroll-target="#gradient-descent">Gradient Descent</a>
+  <ul class="collapse">
+  <li><a href="#the-gradient-descent-algorithm" id="toc-the-gradient-descent-algorithm" class="nav-link" data-scroll-target="#the-gradient-descent-algorithm">The Gradient Descent Algorithm</a></li>
+  <li><a href="#creating-an-example-problem" id="toc-creating-an-example-problem" class="nav-link" data-scroll-target="#creating-an-example-problem">Creating an Example Problem</a></li>
+  <li><a href="#defining-our-loss" id="toc-defining-our-loss" class="nav-link" data-scroll-target="#defining-our-loss">2.3 Defining our loss</a></li>
+  <li><a href="#calculating-gradients" id="toc-calculating-gradients" class="nav-link" data-scroll-target="#calculating-gradients">2.4 Calculating Gradients</a></li>
+  <li><a href="#gradient-descent-on-our-toy-example" id="toc-gradient-descent-on-our-toy-example" class="nav-link" data-scroll-target="#gradient-descent-on-our-toy-example">Gradient Descent on our Toy Example</a></li>
+  </ul></li>
+  <li><a href="#optimization-methods" id="toc-optimization-methods" class="nav-link" data-scroll-target="#optimization-methods">Optimization Methods</a></li>
+  <li><a href="#demo-time" id="toc-demo-time" class="nav-link" data-scroll-target="#demo-time">Demo Time!</a></li>
+  <li><a href="#where-next" id="toc-where-next" class="nav-link" data-scroll-target="#where-next">Where next</a></li>
+  <li><a href="#a-dose-of-ethics-objectives-matter" id="toc-a-dose-of-ethics-objectives-matter" class="nav-link" data-scroll-target="#a-dose-of-ethics-objectives-matter">A Dose Of Ethics: Objectives Matter</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/johnowhitaker/tglcourse/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Lesson 2: Gradient Descent and Optimization</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div class="cell">
+<div class="cell-output cell-output-display">
+
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/LwBB6YYr-Ro" frameborder="0" allowfullscreen=""></iframe>
+        
+</div>
+</div>
+<p>If you’d prefer a much longer video with more explanation, here is a <a href="https://youtu.be/R19vbfTtmkc">fairly rough live notebook walkthrough</a>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://colab.research.google.com/github/johnowhitaker/tglcourse/blob/main/02_Optimization.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+<section id="gradient-descent" class="level2">
+<h2 class="anchored" data-anchor-id="gradient-descent">Gradient Descent</h2>
+<div class="cell">
+<div class="cell-output cell-output-display">
+<p><img src="02_Optimization_files/figure-html/cell-3-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Lets consider the following situation. Say we have:<br> - A function (could be a neural net, could be the equation for a straight line…) that takes some input(s) and produces some output(s) based on a set of parameters - let’s call them <code>w</code>. <br> - Some measure of how well this function performs. Maybe this is how poorly the function describes some pattern in your data, or how well a network does in a classification task. Let’s call this measure the <code>loss</code>, where the goal is to make this as small as possible.<br></p>
+<p>The question is often ‘how do we find a set of parameters that gives the best possible result?’. There are a few ways we could try to solve this. The most basic might be:<br> - Try all possible values for all parameters<br> - Randomly guess and keep the best<br></p>
+<p>Clearly both of these have some major flaws, and when we’re dealing with thousands or millions of parameters there is no way you could try all possible combinations. So, we need a smarter approach.</p>
+<section id="the-gradient-descent-algorithm" class="level3">
+<h3 class="anchored" data-anchor-id="the-gradient-descent-algorithm">The Gradient Descent Algorithm</h3>
+<p>What if we could start from some set of parameters, and then see how to modify them slightly such that we get an improvement? Ideally, for each parameter we’d like to know what happens to the loss when we tweak that parameter slightly up or down. Formally, we’d like to know the <strong>gradient of the loss with respect to that parameter</strong>. You can think of the gradient as telling us which direction to move to get the biggest increase (or decrease if we go in the opposite direction).</p>
+<p>IF we can find these gradients, then a sensible method for finding a good set of parameters to solve a given problem would be 1. Start with some random parameters 2. Find the gradient of the loss with respect to each parameter 3. Update each parameter such that you move some small amount in the direction of steepest descent 4. Go back to step 2, finding the gradients based on the new parameter values and repeat all this a bunch of times.</p>
+<p>This is the gradient descent algorithm in a nutshell :) Let’s do an example, where we’ll create some data that roughtly follows a trend and try to approximate that trend with a straight line, which will be specified by two parameters.</p>
+</section>
+<section id="creating-an-example-problem" class="level3">
+<h3 class="anchored" data-anchor-id="creating-an-example-problem">Creating an Example Problem</h3>
+<p>Here’s our ‘training’ data, with a single input (x) and a single target (y):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating some data:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.rand(<span class="dv">20</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="dv">3</span><span class="op">*</span>x <span class="op">+</span> <span class="fl">0.2</span> <span class="op">+</span> torch.randn(<span class="dv">20</span>)<span class="op">*</span><span class="fl">0.3</span> <span class="co"># y = ax + b + noise</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>plt.scatter(x, y) <span class="co"># It's always helpful to visualize what's going on wherever possible.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;matplotlib.collections.PathCollection&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="02_Optimization_files/figure-html/cell-4-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="defining-our-loss" class="level3">
+<h3 class="anchored" data-anchor-id="defining-our-loss">2.3 Defining our loss</h3>
+<p>We can describe a line as a function <code>y = ax + b</code> where a and b are our parameters. Take a look at the two lines shown here:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">3.6</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].scatter(x, y)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].plot(x, <span class="fl">0.1</span><span class="op">*</span>x <span class="op">+</span> <span class="fl">2.6</span>, label<span class="op">=</span><span class="st">'y1 = 0.1x + 2.6'</span>, c<span class="op">=</span><span class="st">'orange'</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].legend()</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].scatter(x, y)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].plot(x, <span class="dv">2</span><span class="op">*</span>x <span class="op">+</span> <span class="fl">0.5</span>, label<span class="op">=</span><span class="st">'y2 = 2*x + 0.5'</span>,  c<span class="op">=</span><span class="st">'orange'</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].legend()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="02_Optimization_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Clearly one does a better job than the other at describing the trend in this data. But how do we quantify this? There are several measures used in this sort of case, with a popular one being the ‘Root Mean Squared Error’. It sounds intimidating, but all we do is take the errors (how far each point is from the line), square them, sum the squares and then take the square root of that. More points further from the line -&gt; higher errors (squaring takes care of any minus signs that would otherwise cause issues with points above/below the line) -&gt; a higher final value for the RMSE. So lower is better. This is our loss function.</p>
+<p>Here’s one way to implement this in code (there are also built-in functions for this and many other ways you could write it):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rmse(y, y_pred):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.mean((y<span class="op">-</span>y_pred)<span class="op">**</span><span class="dv">2</span>)<span class="op">**</span><span class="fl">0.5</span> <span class="co"># See how many ways you can write this</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Using this loss function, we can quantify how well those lines match the data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>y1 <span class="op">=</span> <span class="fl">0.1</span><span class="op">*</span>x <span class="op">+</span> <span class="fl">2.6</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>y2 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>x <span class="op">+</span> <span class="fl">0.5</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'RMSE for y_hat1 = 0.1x + 2.6:'</span>, rmse(y, y1))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'RMSE for y_hat2 = 2*x + 0.5:'</span>, rmse(y, y2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RMSE for y_hat1 = 0.1x + 2.6: tensor(1.3639)
+RMSE for y_hat2 = 2*x + 0.5: tensor(0.3955)</code></pre>
+</div>
+</div>
+<p>The second line has a lower loss, and is therefore a better fit. Tweak the parameters and see if you can do even better.</p>
+<p><strong>THINK</strong>: What is your thought process as you try this? Are you doing something like the gradient descent described earlier?</p>
+</section>
+<section id="calculating-gradients" class="level3">
+<h3 class="anchored" data-anchor-id="calculating-gradients">2.4 Calculating Gradients</h3>
+<p>So, how do we find the gradients we keep talking about? If you’re good at differentiation, you can look at a function and figure them out analytically. But this quickly breaks down when the function is complex or involves many steps. Fortunately, PyTorch does something called automatic differentiation, where it can keep track of every operation that happens to a tensor. It builds something called a computational graph, and when you want to calculate the gradients with respect to some final result you can simply call .backward() and PyTorch will trace the path back through this graph filling in the gradients at each step. We won’t go too deep into this, but here’s a simple example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Some operations to demonstrate autograd</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> torch.tensor(<span class="fl">5.7</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>a.requires_grad <span class="op">=</span> <span class="va">True</span> <span class="co"># This is important - by default PyTorch won't track gradients</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="dv">5</span><span class="op">*</span>a <span class="op">+</span> <span class="dv">2</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> torch.sin(<span class="dv">2</span><span class="op">*</span>b<span class="op">+</span><span class="fl">0.1</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>c</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>tensor(-0.9871, grad_fn=&lt;SinBackward0&gt;)</code></pre>
+</div>
+</div>
+<p>Notice that <code>grad_fn</code> bit there? Because c depends on something (b) that depends on a tensor that requires_grad (a), PyTorch keeps track of the function needed to calculate the gradients. We could then see the gradient of c with respect to a with:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>c.backward() <span class="co"># Tell pytorch to propagate the gradients backwards down the chain of operations</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>a.grad <span class="co"># See the resulting gradient</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>tensor(-1.6036)</code></pre>
+</div>
+</div>
+<p>The derivative of c with respect to a is (10*cos(10*(a+0.41)) - plugging in a=5.7 we see that this does indeed give the answer dc/da = -1.603. This is quite magical - we can chain complex functions together and as long as eveything is differentiable we can rely on PyTorch to be able to work backwards and give us all the gradients we need.</p>
+</section>
+<section id="gradient-descent-on-our-toy-example" class="level3">
+<h3 class="anchored" data-anchor-id="gradient-descent-on-our-toy-example">Gradient Descent on our Toy Example</h3>
+<p>Let’s get back to that example we were playing with, trying to find the parameters for a line that best describes the trend in our data.</p>
+<p>We create our parameters <code>w</code> (initialized to 2 random floats) and tell pytorch to keep track of gradients.</p>
+<p>Then, in a loop, we repeatedly find the loss, find the gradients (<code>loss.backward()</code>) and update the parameters accordingly. We could do this ourselves but PyTorch provides an optimizer that handles the update for us - torch.optim.SGD. The learning rate <code>lr</code> determines how small of a step we take at each iteration.</p>
+<p>Once the loop has finished running, we plot the losses and see that we are indeed getting better and better over time.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>w <span class="op">=</span> torch.rand(<span class="dv">2</span>) <span class="co"># Our parameters</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>w.requires_grad <span class="op">=</span> <span class="va">True</span> <span class="co"># Explain</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> torch.optim.SGD([w], lr<span class="op">=</span><span class="fl">0.2</span>) <span class="co"># Research: What does SGD stand for?</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>losses <span class="op">=</span> [] <span class="co"># Keep track of our losses (RMSE values)</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>ws <span class="op">=</span> [] <span class="co"># Keep track of the values we predicted</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>):</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reset everything related to gradient calculations</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    optimizer.zero_grad()</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get our outputs</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    y_hat <span class="op">=</span> w[<span class="dv">0</span>]<span class="op">*</span>x <span class="op">+</span> w[<span class="dv">1</span>] </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate our loss</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> rmse(y, y_hat)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Store the loss and a copy of the weights for later</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    losses.append(loss.detach().item())</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    ws.append(w.clone().detach().numpy())</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Print out updates ever few iterations</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">%</span> <span class="dv">20</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'loss at step'</span>, i, <span class="st">':'</span>, loss)</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Backpropagate the loss and use it to update the parameters</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>    loss.backward() <span class="co"># This does all the gradient calculations</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>    optimizer.step() <span class="co"># The optimizer does the update. </span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>plt.plot(losses)</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Loss over time'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>loss at step 0 : tensor(1.0562, grad_fn=&lt;PowBackward0&gt;)
+loss at step 20 : tensor(0.5021, grad_fn=&lt;PowBackward0&gt;)
+loss at step 40 : tensor(0.3565, grad_fn=&lt;PowBackward0&gt;)
+loss at step 60 : tensor(0.2702, grad_fn=&lt;PowBackward0&gt;)
+loss at step 80 : tensor(0.2418, grad_fn=&lt;PowBackward0&gt;)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>Text(0.5, 1.0, 'Loss over time')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="02_Optimization_files/figure-html/cell-10-output-3.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Our random parameters have been updated 100 times and are now close to as good as they can possibly get:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>w <span class="co"># View the learned parameters</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>tensor([3.0881, 0.0810], requires_grad=True)</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>w.grad <span class="co"># We can see the gradients of the loss with respect to w (now small since we're close to optimum)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>tensor([-0.0208,  0.0105])</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot predictions with these parameters</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>plt.scatter(x, y, label<span class="op">=</span><span class="st">'training data'</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>y_hat <span class="op">=</span> w[<span class="dv">0</span>]<span class="op">*</span>x <span class="op">+</span> w[<span class="dv">1</span>]</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>plt.plot(x, y_hat.detach(), c<span class="op">=</span><span class="st">'red'</span>, label<span class="op">=</span><span class="st">'y_hat (with learned parameters)'</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>plt.legend()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="02_Optimization_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Since we only have two parameters, we can make a plot that shows the loss for every combination of values within some range. We’ll plot the values of the parameters during the optimization loop above as points, and you can see how they slowly ‘move’ towards a point with lower loss:</p>
+<p>Instead of optimizer.step(), we could do <code>w -= w.grad * 0.2</code> where 0.2 is the learning rate and the minus sign is because we want to move in the direction that reduces loss (so opposite to the steepest gradient).</p>
+<p><strong>EXERCISE</strong>:: Try this and confirm for yourself that this works. (You’ll need <code>with torch.no_grad(): w -= w.grad * 0.2</code> or PyTorch will complain - try it without first for a glimpse at an error you’ll likely meet a few more times in life ;)</p>
+<p><strong>THINK</strong>: Does this make sense? Are there any issues? What happens when the gradients are small? What happens when our step size (learning rate) is too high?</p>
+<p><strong>THINK</strong>: What kinds of problems can we solve with this tool? Can you think of examples? What are the limitations?</p>
+</section>
+</section>
+<section id="optimization-methods" class="level2">
+<h2 class="anchored" data-anchor-id="optimization-methods">Optimization Methods</h2>
+<p>Gradient Descent (or Stochastic Gradient Descent, which is just GD on batches of data rather than the full dataset) is just one optimization method. There are many improvements that can be made. If you’re interested, here is a great rundown of the many alternatives that are used today: https://ruder.io/optimizing-gradient-descent/</p>
+<p>One useful idea that is bundled with optimizers in PyTorch is that of regularization. It’s a large topic, but in essence regularization is concerned with smoothing things out and simplifying models or parameter sets by avoiding any values that are too extreme.</p>
+<p>At some point I hope to add another notebook for exploring this, for now just remember that there are lots of different choices of optimizer available in PyTorch and they can be fun to experiment with and compare.</p>
+</section>
+<section id="demo-time" class="level2">
+<h2 class="anchored" data-anchor-id="demo-time">Demo Time!</h2>
+<p>We’ve solved the toy problem above with optimization. What else can we do with this? Well, for one thing this same approach is used to train pretty much all neural networks in use today! We’ll look at how that works in a future lesson. For now, you might enjoy checking out the bonus notebook ‘Fun With Generators and Losses’ where we look at a number of ‘generators’ (functions with parameters we can optimize that produce and image) and a number of ‘losses’ which we can use to get different effects. For example, here’s how we’d optimize a network based on sinusoidal functions to match a text description (leaning on some magical algorithms like CLIP which we haven’t covered yet):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tglcourse.generation_utils <span class="im">import</span> SirenGenerator, CLIPLossToTargets, optimise</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">'cuda:0'</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">'cpu'</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> SirenGenerator().to(device)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>clip_loss_fn <span class="op">=</span> CLIPLossToTargets(text_prompts<span class="op">=</span>[<span class="st">'A painting of a jellyfish by a coral reef'</span>], n_cuts<span class="op">=</span><span class="dv">32</span>, device<span class="op">=</span>device)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> torch.optim.Adam(gen.parameters(), lr<span class="op">=</span><span class="fl">0.01</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>optimise(gen, [clip_loss_fn], optimizer<span class="op">=</span>optimizer, n_steps<span class="op">=</span><span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If you dig into the code for that <a href="https://johnowhitaker.github.io/tglcourse/generators_and_losses.html#optimise"><code>optimise</code></a> function you’ll see that it is essentially just the same as the optimization loop we made earlier in this notebook!</p>
+</section>
+<section id="where-next" class="level2">
+<h2 class="anchored" data-anchor-id="where-next">Where next</h2>
+<p>The bonus notebook ‘Fun with Generators and Losses’ and the accompanying <a href="https://youtu.be/rO5nmpniYkU">video</a> are fairly complimentary to this notebook. The video especially shows a very high-level view of optimization and how this single idea underlies a TON of deep learning applications. Lots of the code in the notebook will look unfamiliar since we haven’t covered many of the building blocks in this course yet - give it a skim now and then re-read it again after, say, lesson 5.</p>
+<div class="cell">
+<div class="cell-output cell-output-display">
+<p><img src="02_Optimization_files/figure-html/cell-16-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Two other ideas for how to keep busy until the next lesson: <br> - Check out <a href="https://www.youtube.com/watch?v=VMj-3S1tku0">The spelled-out intro to neural networks and backpropagation: building micrograd</a> where Andrej Karpathy trains a neural network from scratch, including implementing the gradient calculations and things which we’ve been offloading to PyTorch. Great if you like to see things built from the bottom up! - Go back through this notebook and try to tweak as many things as you can. Re-implement the loss calculation without peeking at the RMSE function, change the starting values of the parameters we’re optimizing, try a different optimizer (see the torch documentation) or play with changing the learning rate. Can you find a way to get a good solution with fewer steps? Does it ever go wrong and give crazy results or errors? - Look for code online for training a neural network in PyTorch. Can you spot the optimization loop? More generally, can you find examples online of deep learning tasks and identify the three ingredients shown above in each case?</p>
+</section>
+<section id="a-dose-of-ethics-objectives-matter" class="level2">
+<h2 class="anchored" data-anchor-id="a-dose-of-ethics-objectives-matter">A Dose Of Ethics: Objectives Matter</h2>
+<p>Let’s say you want to predict recidivism rates (how likely a person is to commit a crime once released). What should your loss function be? Perhaps you can look at past cases, see who was re-arrested and train a model to maximise accuracy when predicting this. After all, arrests are a good way to measure crimes, right? But what if some neighbourhoods have more police presence, or the officers are more likely to arrest some subset of the population? If the measure is biased, the algorithm will be biased, and a biased algorithm can mean unfair outcomes. <a href="https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing">This is a big problem for risk prediction software</a> and is one example of the kinds of issues that can arise when you pick the wrong metric to optimize.</p>
+<p>From content recommendation systems pushing outrage-inducing clickbait to maximise ‘engagement’, to chatbots spewing hate-speech, failures to consider the consequences of optimizing towards a single metric abound. We’re going to have a lot of fun with optimization, but remember: with great fun… comes great responsibility.</p>
+<p>Page stats: Total Hits: <a href="http://hits.dwyl.com/johnowhitaker/tglcourse"><img src="https://hits.dwyl.com/johnowhitaker/tglcourse.svg?style=flat-square&amp;show=unique" class="img-fluid" alt="HitCount"></a> Page visitors: <img src="https://page-views.glitch.me/badge?page_id=tglcourse.l02" class="img-fluid" alt="visitor badge"></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

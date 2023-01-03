@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.280">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>tglcourse - Stable Diffusion</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="tglcourse - Stable Diffusion">
+<meta property="og:description" content="This is based on Unit 3 of the Hugging Face Diffusion Models Course. In this unit you will meet a powerful diffusion model called Stable Diffusion (SD) and explore what it can do.">
+<meta property="og:site-name" content="tglcourse">
+<meta name="twitter:title" content="tglcourse - Stable Diffusion">
+<meta name="twitter:description" content="This is based on Unit 3 of the Hugging Face Diffusion Models Course. In this unit you will meet a powerful diffusion model called Stable Diffusion (SD) and explore what it can do.">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">tglcourse</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/johnowhitaker/tglcourse"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://discord.gg/vSjhr8xb4g"><i class="bi bi-discord" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.patreon.com/johnowhitaker"><i class="bi bi-currency-dollar" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Stable Diffusion</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">The Generative Landscape</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting_started.html" class="sidebar-item-text sidebar-link">Getting Started</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Lessons</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pytorch_basics.html" class="sidebar-item-text sidebar-link">Lesson 1: PyTorch Basics</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./optimization.html" class="sidebar-item-text sidebar-link">Lesson 2: Gradient Descent and Optimization</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./building_nns.html" class="sidebar-item-text sidebar-link">Lesson 3: Neural Networks and Loss Functions</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./representations.html" class="sidebar-item-text sidebar-link">Lesson 4: Learning Representations + Style Transfer</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./clip.html" class="sidebar-item-text sidebar-link">Lesson 5: Exploring Multiple Modalities with CLIP</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./generative_1.html" class="sidebar-item-text sidebar-link">Lesson 6 - Generative Modelling Intro (AutoEncoders)</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dm1.html" class="sidebar-item-text sidebar-link">An Introduction to Diffusion Models</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dm2.html" class="sidebar-item-text sidebar-link">Fine-Tuning, Guidance and Conditioning</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dm3.html" class="sidebar-item-text sidebar-link active">Stable Diffusion</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">Bonus Material</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bonus_material_intro.html" class="sidebar-item-text sidebar-link">Bonus Material</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scripts.html" class="sidebar-item-text sidebar-link">Creating Scripts</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./generators_and_losses.html" class="sidebar-item-text sidebar-link">Fun with Generators and Losses</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interfaces_with_gradio.html" class="sidebar-item-text sidebar-link">Creating Quick Interfaces with Gradio</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./finetuning_pretrained_models.html" class="sidebar-item-text sidebar-link">Fine-Tuning Pretrained Networks for Image Classification</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./discussions.html" class="sidebar-item-text sidebar-link">Discussions</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./projects.html" class="sidebar-item-text sidebar-link">Projects</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./library.html" class="sidebar-item-text sidebar-link">The Library</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#get-started" id="toc-get-started" class="nav-link active" data-scroll-target="#get-started">Get Started</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#latent-diffusion" id="toc-latent-diffusion" class="nav-link" data-scroll-target="#latent-diffusion">Latent Diffusion</a></li>
+  <li><a href="#text-conditioning" id="toc-text-conditioning" class="nav-link" data-scroll-target="#text-conditioning">Text Conditioning</a></li>
+  <li><a href="#classifier-free-guidance" id="toc-classifier-free-guidance" class="nav-link" data-scroll-target="#classifier-free-guidance">Classifier-free Guidance</a></li>
+  <li><a href="#other-types-of-conditioning-super-resolution-inpainting-and-depth-to-image" id="toc-other-types-of-conditioning-super-resolution-inpainting-and-depth-to-image" class="nav-link" data-scroll-target="#other-types-of-conditioning-super-resolution-inpainting-and-depth-to-image">Other Types of Conditioning: Super-Resolution, Inpainting and Depth-to-Image</a></li>
+  <li><a href="#fine-tuning-with-dreambooth" id="toc-fine-tuning-with-dreambooth" class="nav-link" data-scroll-target="#fine-tuning-with-dreambooth">Fine-Tuning with DreamBooth</a></li>
+  <li><a href="#hands-on-notebook" id="toc-hands-on-notebook" class="nav-link" data-scroll-target="#hands-on-notebook">Hands-On Notebook</a></li>
+  <li><a href="#project-time" id="toc-project-time" class="nav-link" data-scroll-target="#project-time">Project Time</a></li>
+  <li><a href="#some-additional-resources" id="toc-some-additional-resources" class="nav-link" data-scroll-target="#some-additional-resources">Some Additional Resources</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/johnowhitaker/tglcourse/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Stable Diffusion</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<p>This is based on <a href="https://github.com/huggingface/diffusion-models-class/tree/main/unit3">Unit 3 of the Hugging Face Diffusion Models Course</a>. In this unit you will meet a powerful diffusion model called Stable Diffusion (SD) and explore what it can do.</p>
+<section id="get-started" class="level2">
+<h2 class="anchored" data-anchor-id="get-started">Get Started</h2>
+<p>Here are the steps for this unit:</p>
+<ul>
+<li>Read through the material below for an overview of the key ideas of this unit</li>
+<li>Check out the <strong>Stable Diffusion Introduction</strong> notebook to see SD applied in practice to some common use-cases</li>
+<li>Check out the <strong>Stable Diffusion Deep Dive video</strong> (below) and the accompanying notebook for a deeper exploration of the different components and how they can be adapted for different effects. This material was created for the new FastAI course, <a href="https://www.fast.ai/posts/part2-2022.html">Stable Diffusion from the Foundations</a> - the first few lessons are already available and the rest will be released in the next few months, making this a great supplement to this class for anyone curious about building these kinds of models completely from scratch.</li>
+<li>Enter the <a href="https://github.com/huggingface/diffusion-models-class/tree/main/hackathon">HuggingFace Dreambooth Hackathon</a> for extra fun and a chance to win a bit of swag</li>
+</ul>
+<div class="cell">
+<div class="cell-output cell-output-display">
+
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/0_BBRNYInx8" frameborder="0" allowfullscreen=""></iframe>
+        
+</div>
+</div>
+</section>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p><img src="https://github.com/huggingface/diffusion-models-class/raw/main/unit3/sd_demo_images.jpg" class="img-fluid" alt="SD example images"><br> <em>Example images generated using Stable Diffusion</em></p>
+<p>Stable Diffusion is a powerful text-conditioned latent diffusion model. Don’t worry, we’ll explain those words shortly! Its ability to create amazing images from text descriptions has made it an internet sensation. In this unit, we’re going to explore how SD works and see what other tricks it can do.</p>
+</section>
+<section id="latent-diffusion" class="level2">
+<h2 class="anchored" data-anchor-id="latent-diffusion">Latent Diffusion</h2>
+<p>As image size grows, so does the computational power required to work with those images. This is especially pronounced in an operation called self-attention, where the amount of operations grows quadratically with the number of inputs. A 128px square image has 4x as many pixels as a 64px square image, and so requires 16x (i.e.&nbsp;4<sup>2</sup>) the memory and compute in a self-attention layer. This is a problem for anyone who’d like to generate high-resolution images!</p>
+<p><img src="https://github.com/CompVis/latent-diffusion/raw/main/assets/modelfigure.png" class="img-fluid" alt="latent diffusion diagram"><br> <em>Diagram from the <a href="http://arxiv.org/abs/2112.10752">Latent Diffusion paper</a></em></p>
+<p>Latent diffusion helps to mitigate this issue by using a separate model called a Variational Auto-Encoder (VAE) to <strong>compress</strong> images to a smaller spatial dimension. The rationale behind this is that images tend to contain a large amount of redundant information - given enough training data, a VAE can hopefully learn to produce a much smaller representation of an input image and then reconstruct the image based on this small <strong>latent</strong> representation with a high degree of fidelity. The VAE used in SD takes in 3-channel images and produces a 4-channel latent representation with a reduction factor of 8 for each spatial dimension. That is, a 512px square input image will be compressed down to a 4x64x64 latent.</p>
+<p>By applying the diffusion process on these <strong>latent representations</strong> rather than on full-resolution images, we can get many of the benefits that would come from using smaller images (lower memory usage, fewer layers needed in the UNet, faster generation times…) and still decode the result back to a high-resolution image once we’re ready to view the final result. This innovation dramatically lowers the cost to train and run these models.</p>
+</section>
+<section id="text-conditioning" class="level2">
+<h2 class="anchored" data-anchor-id="text-conditioning">Text Conditioning</h2>
+<p>In Unit 2 we showed how feeding additional information to the UNet allows us to have some additional control over the types of images generated. We call this conditioning. Given a noisy version of an image, the model is tasked with predicting the denoised version <strong>based on additional clues</strong> such as a class label or, in the case of Stable Diffusion, a text description of the image. At inference time, we can feed in the description of an image we’d like to see and some pure noise as a starting point, and the model does its best to ‘denoise’ the random input into something that matches the caption.</p>
+<p><img src="https://github.com/huggingface/diffusion-models-class/raw/main/unit3/text_encoder_noborder.png" class="img-fluid" alt="text encoder diagram"><br> <em>Diagram showing the text encoding process which transforms the input prompt into a set of text embeddings (the encoder_hidden_states) which can then be fed in as conditioning to the UNet.</em></p>
+<p>For this to work, we need to create a numeric representation of the text that captures relevant information about what it describes. To do this, SD leverages a pre-trained transformer model based on something called CLIP. CLIP’s text encoder was designed to process image captions into a form that could be used to compare images and text, so it is well suited to the task of creating useful representations from image descriptions. An input prompt is first tokenized (based on a large vocabulary where each word or sub-word is assigned a specific token) and then fed through the CLIP text encoder, producing a 768-dimensional (in the case of SD 1.X) or 1024-dimensional (SD 2.X) vector for each token. To keep things consistent prompts are always padded/truncated to be 77 tokens long, and so the final representation which we use as conditioning is a tensor of shape 77x1024 per prompt.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://github.com/huggingface/diffusion-models-class/raw/main/unit3/sd_unet_color.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">conditioning diagram</figcaption><p></p>
+</figure>
+</div>
+<p>OK, so how do we actually feed this conditioning information into the UNet for it to use as it makes predictions? The answer is something called cross-attention. Scattered throughout the UNet are cross-attention layers. Each spatial location in the UNet can ‘attend’ to different tokens in the text conditioning, bringing in relevant information from the prompt. The diagram above shows how this text conditioning (as well as timestep-based conditioning) is fed in at different points. As you can see, at every level the UNet has ample opportunity to make use of this conditioning!</p>
+</section>
+<section id="classifier-free-guidance" class="level2">
+<h2 class="anchored" data-anchor-id="classifier-free-guidance">Classifier-free Guidance</h2>
+<p>It turns out that even with all of the effort put into making the text conditioning as useful as possible, the model still tends to default to relying mostly on the noisy input image rather than the prompt when making its predictions. In a way, this makes sense - many captions are only loosely related to their associated images and so the model learns not to rely too heavily on the descriptions! However, this is undesirable when it comes time to generate new images - if the model doesn’t follow the prompt then we may get images out that don’t relate to our description at all.</p>
+<p><img src="https://github.com/huggingface/diffusion-models-class/raw/main/unit3/cfg_example_0_1_2_10.jpeg" class="img-fluid" alt="CFG scale demo grid"><br> <em>Images generated from the prompt “An oil painting of a collie in a top hat” with CFG scale 0, 1, 2 and 10 (left to right)</em></p>
+<p>To fix this, we use a trick called Classifier-Free Guidance (CGF). During training, text conditioning is sometimes kept blank, forcing the model to learn to denoise images with no text information whatsoever (unconditional generation). Then at inference time, we make two separate predictions: one with the text prompt as conditioning and one without. We can then use the difference between these two predictions to create a final combined prediction that pushes <strong>even further</strong> in the direction indicated by the text-conditioned prediction according to some scaling factor (the guidance scale), hopefully resulting in an image that better matches the prompt. The image above shows the outputs for a prompt at different guidance scales - as you can see, higher values result in images that better match the description.</p>
+</section>
+<section id="other-types-of-conditioning-super-resolution-inpainting-and-depth-to-image" class="level2">
+<h2 class="anchored" data-anchor-id="other-types-of-conditioning-super-resolution-inpainting-and-depth-to-image">Other Types of Conditioning: Super-Resolution, Inpainting and Depth-to-Image</h2>
+<p>It is possible to create versions of Stable Diffusion that take in additional kinds of conditioning. For example, the <a href="https://huggingface.co/stabilityai/stable-diffusion-2-depth">Depth-to-Image model</a> has extra input channels that take in-depth information about the image being denoised, and at inference time we can feed in the depth map of a target image (estimated using a separate model) to hopefully generate an image with a similar overall structure.</p>
+<p><img src="https://huggingface.co/stabilityai/stable-diffusion-2-depth/resolve/main/depth2image.png" class="img-fluid" alt="depth to image example"><br> <em>Depth-conditioned SD is able to generate different images with the same overall structure (example from StabilityAI)</em></p>
+<p>In a similar manner, we can feed in a low-resolution image as the conditioning and have the model generate the high-resolution version (<a href="https://huggingface.co/stabilityai/stable-diffusion-x4-upscaler">as used by the Stable Diffusion Upscaler</a>). Finally, we can feed in a mask showing a region of the image to be re-generated as part of the ‘in-painting’ task, where the non-mask regions need to stay intact while new content is generated for the masked area.</p>
+</section>
+<section id="fine-tuning-with-dreambooth" class="level2">
+<h2 class="anchored" data-anchor-id="fine-tuning-with-dreambooth">Fine-Tuning with DreamBooth</h2>
+<p><img src="https://dreambooth.github.io/DreamBooth_files/teaser_static.jpg" class="img-fluid" alt="dreambooth diagram"> <em>Image from the <a href="https://dreambooth.github.io/">dreambooth project page</a> based on the Imagen model</em></p>
+<p>DreamBooth is a technique for fine-tuning a text-to-image model to ‘teach’ it a new concept, such as a specific object or style. The technique was originally developed for Google’s Imagen model but was quickly adapted to <a href="https://huggingface.co/docs/diffusers/training/dreambooth">work for stable diffusion</a>. Results can be extremely impressive (if you’ve seen anyone with an AI profile picture on social media recently the odds are high it came from a dreambooth-based service) but the technique is also sensitive to the settings used, so check out our notebook and <a href="https://huggingface.co/blog/dreambooth">this great investigation into the different training parameters</a> for some tips on getting it working as well as possible.</p>
+</section>
+<section id="hands-on-notebook" class="level2">
+<h2 class="anchored" data-anchor-id="hands-on-notebook">Hands-On Notebook</h2>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Chapter</th>
+<th style="text-align: left;">Colab</th>
+<th style="text-align: left;">Kaggle</th>
+<th style="text-align: left;">Gradient</th>
+<th style="text-align: left;">Studio Lab</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Stable Diffusion Introduction</td>
+<td style="text-align: left;"><a href="https://colab.research.google.com/github/huggingface/diffusion-models-class/blob/main/unit3/01_stable_diffusion_introduction.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid" alt="Open In Colab"></a></td>
+<td style="text-align: left;"><a href="https://kaggle.com/kernels/welcome?src=https://github.com/huggingface/diffusion-models-class/blob/main/unit3/01_stable_diffusion_introduction.ipynb"><img src="https://kaggle.com/static/images/open-in-kaggle.svg" class="img-fluid" alt="Kaggle"></a></td>
+<td style="text-align: left;"><a href="https://console.paperspace.com/github/huggingface/diffusion-models-class/blob/main/unit3/01_stable_diffusion_introduction.ipynb"><img src="https://assets.paperspace.io/img/gradient-badge.svg" class="img-fluid" alt="Gradient"></a></td>
+<td style="text-align: left;"><a href="https://studiolab.sagemaker.aws/import/github/huggingface/diffusion-models-class/blob/main/unit3/01_stable_diffusion_introduction.ipynb"><img src="https://studiolab.sagemaker.aws/studiolab.svg" class="img-fluid" alt="Open In SageMaker Studio Lab"></a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">DreamBooth Hackathon Notebook</td>
+<td style="text-align: left;"><a href="https://colab.research.google.com/github/huggingface/diffusion-models-class/blob/main/hackathon/dreambooth.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid" alt="Open In Colab"></a></td>
+<td style="text-align: left;"><a href="https://kaggle.com/kernels/welcome?src=https://github.com/huggingface/diffusion-models-class/blob/main/hackathon/dreambooth.ipynb"><img src="https://kaggle.com/static/images/open-in-kaggle.svg" class="img-fluid" alt="Kaggle"></a></td>
+<td style="text-align: left;"><a href="https://console.paperspace.com/github/huggingface/diffusion-models-class/blob/main/hackathon/dreambooth.ipynb"><img src="https://assets.paperspace.io/img/gradient-badge.svg" class="img-fluid" alt="Gradient"></a></td>
+<td style="text-align: left;"><a href="https://studiolab.sagemaker.aws/import/github/huggingface/diffusion-models-class/blob/main/hackathon/dreambooth.ipynb"><img src="https://studiolab.sagemaker.aws/studiolab.svg" class="img-fluid" alt="Open In SageMaker Studio Lab"></a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Stable Diffusion Deep Dive</td>
+<td style="text-align: left;"><a href="https://colab.research.google.com/github/fastai/diffusion-nbs/blob/master/Stable%20Diffusion%20Deep%20Dive.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid" alt="Open In Colab"></a></td>
+<td style="text-align: left;"><a href="https://kaggle.com/kernels/welcome?src=https://github.com/fastai/diffusion-nbs/blob/master/Stable%20Diffusion%20Deep%20Dive.ipynb"><img src="https://kaggle.com/static/images/open-in-kaggle.svg" class="img-fluid" alt="Kaggle"></a></td>
+<td style="text-align: left;"><a href="https://console.paperspace.com/github/fastai/diffusion-nbs/blob/master/Stable%20Diffusion%20Deep%20Dive.ipynb"><img src="https://assets.paperspace.io/img/gradient-badge.svg" class="img-fluid" alt="Gradient"></a></td>
+<td style="text-align: left;"><a href="https://studiolab.sagemaker.aws/import/github/fastai/diffusion-nbs/blob/master/Stable%20Diffusion%20Deep%20Dive.ipynb"><img src="https://studiolab.sagemaker.aws/studiolab.svg" class="img-fluid" alt="Open In SageMaker Studio Lab"></a></td>
+</tr>
+</tbody>
+</table>
+<p>At this point, you know enough to get started with the accompanying notebooks! Open them in your platform of choice using the links above. Dreambooth requires quite a lot of compute power, so if you’re using Kaggle or Google Colab make sure you set the runtime type to ‘GPU’ for the best results.</p>
+<p>The ‘Stable Diffusion Introduction’ notebook is a short introduction to stable diffusion with the 🤗 Diffusers library, stepping through some basic usage examples using pipelines to generate and modify images.</p>
+<p>In the DreamBooth Hackathon Notebook (in the <a href="https://github.com/huggingface/diffusion-models-class/tree/main/hackathon">hackathon folder</a>) we show how you can fine-tune SD on your own images to create a custom version of the model covering a new style or concept.</p>
+<p>Finally, the ‘Stable Diffusion Deep Dive’ notebook and video break down every step in a typical generation pipeline, suggesting some novel ways to modify each stage for additional creative control.</p>
+</section>
+<section id="project-time" class="level2">
+<h2 class="anchored" data-anchor-id="project-time">Project Time</h2>
+<p>Follow the instructions in the <strong>DreamBooth</strong> notebook to train your own model for one of the specified categories. Make sure you include the example outputs in your submission so that we can choose the best models in each category! See the <a href="https://github.com/huggingface/diffusion-models-class/tree/main/hackathon">hackathon info</a> for details on prizes, GPU credits and more.</p>
+</section>
+<section id="some-additional-resources" class="level2">
+<h2 class="anchored" data-anchor-id="some-additional-resources">Some Additional Resources</h2>
+<ul>
+<li><p><a href="http://arxiv.org/abs/2112.10752">High-Resolution Image Synthesis with Latent Diffusion Models</a> - The paper that introduced the approach behind Stable Diffusion</p></li>
+<li><p><a href="https://openai.com/blog/clip/">CLIP</a> - CLIP learns to connect text with images and the CLIP text encoder is used to transform a text prompt into the rich numerical representation used by SD. See also, <a href="https://wandb.ai/johnowhitaker/openclip-benchmarking/reports/Exploring-OpenCLIP--VmlldzoyOTIzNzIz">this article on OpenCLIP</a> for some background on recent open-source CLIP variants (one of which is used for SD version 2).</p></li>
+<li><p><a href="https://arxiv.org/abs/2112.10741">GLIDE: Towards Photorealistic Image Generation and Editing with Text-Guided Diffusion Models</a> an early paper demonstrating text conditioning and CFG</p></li>
+</ul>
+<p>Found more great resources? Let us know and we’ll add them to this list.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

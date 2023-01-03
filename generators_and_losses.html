@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.280">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>tglcourse - Fun with Generators and Losses</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="tglcourse - Fun with Generators and Losses">
+<meta property="og:description" content="This content is adapted from a talk I gave to the MIT ‘Computer Visions’ class.">
+<meta property="og:site-name" content="tglcourse">
+<meta name="twitter:title" content="tglcourse - Fun with Generators and Losses">
+<meta name="twitter:description" content="This content is adapted from a talk I gave to the MIT ‘Computer Visions’ class.">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">tglcourse</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/johnowhitaker/tglcourse"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://discord.gg/vSjhr8xb4g"><i class="bi bi-discord" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.patreon.com/johnowhitaker"><i class="bi bi-currency-dollar" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Fun with Generators and Losses</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">The Generative Landscape</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting_started.html" class="sidebar-item-text sidebar-link">Getting Started</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">Lessons</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pytorch_basics.html" class="sidebar-item-text sidebar-link">Lesson 1: PyTorch Basics</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./optimization.html" class="sidebar-item-text sidebar-link">Lesson 2: Gradient Descent and Optimization</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./building_nns.html" class="sidebar-item-text sidebar-link">Lesson 3: Neural Networks and Loss Functions</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./representations.html" class="sidebar-item-text sidebar-link">Lesson 4: Learning Representations + Style Transfer</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./clip.html" class="sidebar-item-text sidebar-link">Lesson 5: Exploring Multiple Modalities with CLIP</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./generative_1.html" class="sidebar-item-text sidebar-link">Lesson 6 - Generative Modelling Intro (AutoEncoders)</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dm1.html" class="sidebar-item-text sidebar-link">An Introduction to Diffusion Models</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dm2.html" class="sidebar-item-text sidebar-link">Fine-Tuning, Guidance and Conditioning</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dm3.html" class="sidebar-item-text sidebar-link">Stable Diffusion</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Bonus Material</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bonus_material_intro.html" class="sidebar-item-text sidebar-link">Bonus Material</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scripts.html" class="sidebar-item-text sidebar-link">Creating Scripts</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./generators_and_losses.html" class="sidebar-item-text sidebar-link active">Fun with Generators and Losses</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interfaces_with_gradio.html" class="sidebar-item-text sidebar-link">Creating Quick Interfaces with Gradio</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./finetuning_pretrained_models.html" class="sidebar-item-text sidebar-link">Fine-Tuning Pretrained Networks for Image Classification</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./discussions.html" class="sidebar-item-text sidebar-link">Discussions</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./projects.html" class="sidebar-item-text sidebar-link">Projects</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./library.html" class="sidebar-item-text sidebar-link">The Library</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#our-first-generator-raw-pixels" id="toc-our-first-generator-raw-pixels" class="nav-link active" data-scroll-target="#our-first-generator-raw-pixels">Our First Generator: Raw Pixels</a></li>
+  <li><a href="#our-first-loss-mean-squared-error" id="toc-our-first-loss-mean-squared-error" class="nav-link" data-scroll-target="#our-first-loss-mean-squared-error">Our First Loss: Mean Squared Error</a></li>
+  <li><a href="#optimization" id="toc-optimization" class="nav-link" data-scroll-target="#optimization">Optimization</a></li>
+  <li><a href="#next-generator-imstack" id="toc-next-generator-imstack" class="nav-link" data-scroll-target="#next-generator-imstack">Next Generator: ImStack</a></li>
+  <li><a href="#style-transfer" id="toc-style-transfer" class="nav-link" data-scroll-target="#style-transfer">Style Transfer</a>
+  <ul class="collapse">
+  <li><a href="#extracting-features-from-a-pretrained-model" id="toc-extracting-features-from-a-pretrained-model" class="nav-link" data-scroll-target="#extracting-features-from-a-pretrained-model">Extracting features from a pretrained model</a></li>
+  <li><a href="#content-lossperceptual-loss" id="toc-content-lossperceptual-loss" class="nav-link" data-scroll-target="#content-lossperceptual-loss">Content Loss/Perceptual Loss</a></li>
+  <li><a href="#style-loss-ot-version" id="toc-style-loss-ot-version" class="nav-link" data-scroll-target="#style-loss-ot-version">Style Loss (OT version)</a></li>
+  </ul></li>
+  <li><a href="#new-generator-siren" id="toc-new-generator-siren" class="nav-link" data-scroll-target="#new-generator-siren">New Generator: SIREN</a></li>
+  <li><a href="#final-generator-bokeh" id="toc-final-generator-bokeh" class="nav-link" data-scroll-target="#final-generator-bokeh">Final Generator: Bokeh!</a></li>
+  <li><a href="#final-loss-clip" id="toc-final-loss-clip" class="nav-link" data-scroll-target="#final-loss-clip">Final Loss: CLIP</a>
+  <ul class="collapse">
+  <li><a href="#using-it-as-a-loss" id="toc-using-it-as-a-loss" class="nav-link" data-scroll-target="#using-it-as-a-loss">Using it as a loss</a></li>
+  </ul></li>
+  <li><a href="#your-turn" id="toc-your-turn" class="nav-link" data-scroll-target="#your-turn">Your Turn!</a></li>
+  <li><a href="#todo-review-check-exports-work" id="toc-todo-review-check-exports-work" class="nav-link" data-scroll-target="#todo-review-check-exports-work">TODO review, check exports work…</a></li>
+  <li><a href="#todo-video-and-more-prose-explaining" id="toc-todo-video-and-more-prose-explaining" class="nav-link" data-scroll-target="#todo-video-and-more-prose-explaining">TODO video and more prose explaining</a></li>
+  <li><a href="#todo-move-optimize-func-higher-so-can-demo-as-we-make-generators" id="toc-todo-move-optimize-func-higher-so-can-demo-as-we-make-generators" class="nav-link" data-scroll-target="#todo-move-optimize-func-higher-so-can-demo-as-we-make-generators">TODO move optimize func higher so can demo as we make generators</a></li>
+  <li><a href="#todo-integrate-demo-into-lesson-2" id="toc-todo-integrate-demo-into-lesson-2" class="nav-link" data-scroll-target="#todo-integrate-demo-into-lesson-2">TODO integrate demo into lesson 2</a>
+  <ul class="collapse">
+  <li><a href="#ideas" id="toc-ideas" class="nav-link" data-scroll-target="#ideas">Ideas</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/johnowhitaker/tglcourse/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Fun with Generators and Losses</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<p>This content is adapted from a talk I gave to the MIT ‘Computer Visions’ class. I’ll link the recording if that get’s released, but in the meantime <a href="https://www.youtube.com/watch?v=rO5nmpniYkU">here is a different variant I recorded</a> that includes a notebook run-through which should explain most of the code here.</p>
+<p>We spoke about how deep learning relies heavily on one key idea: optimization:</p>
+<div class="cell">
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-2-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>We’re going to apply this mindset to the task of creating imagery in creative ways. To this end, we’ll explore a number of different ‘generators’ (each of which create an image from some set of parameters) and a number of ‘losses’ (which try to measure how ‘good’ the generated images are by some measure). And then we’ll play with combining different generators and losses to achieve different outputs.</p>
+<p>These will be introduced one by one, but I’ve tried to make them as interchangeable as possible so that you can swap in or combine any of these building blocks for any of the demos. And at the end there’s a template for you to build your own final custom image generation tool and some hints for ideas to explore.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A lot of this will be doable on CPU but slow enough that GPU is preferrable </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">'cuda:0'</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">'cpu'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="our-first-generator-raw-pixels" class="level2">
+<h2 class="anchored" data-anchor-id="our-first-generator-raw-pixels">Our First Generator: Raw Pixels</h2>
+<p>What if we just optimize some pixels directly? An image is now represented by a number of parameters (the raw RGB values). This should be a good test case, and a chance to think about how we want to frame our Generators going forward.</p>
+<p>We need access to the parameters we can tweak, and a way to get the output.</p>
+<p>The best way I know of is to lean on the machinery PyTorch has for neural networks by inheriting from the nn.Module class. nn.Parameter() makes a tensor that automatically has gradient tracking set up, and all parameters created this way can be accessed with the parameters() function of our generator - which saves us needing to write that ourselves.</p>
+<p>We specify how we’d like to produce an output by defining the forward method. This lets us use our new object as a function - when we run im = gen() we’re actually saying im = gen.forward().</p>
+<p>This might seem slightly overkill for this first example, but let’s just check it out and see how it works:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> PixelGenerator(<span class="dv">128</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> gen() <span class="co"># Get the output of the generator (the image)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Output shape: </span><span class="sc">{</span>im<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>tensor_to_pil(im) <span class="co"># View it</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Output shape: torch.Size([1, 3, 128, 128])</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-5-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Inspecting the parameters:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>[p.shape <span class="cf">for</span> p <span class="kw">in</span> gen.parameters()]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[torch.Size([1, 3, 128, 128])]</code></pre>
+</div>
+</div>
+<p>There we go. Hopefully this will become useful in a second.</p>
+</section>
+<section id="our-first-loss-mean-squared-error" class="level2">
+<h2 class="anchored" data-anchor-id="our-first-loss-mean-squared-error">Our First Loss: Mean Squared Error</h2>
+<p>We’ll take the difference between an image and a target and square it.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a target image</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>target_image <span class="op">=</span> torch.zeros(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">128</span>, <span class="dv">128</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>target_image[:,<span class="dv">1</span>] <span class="op">+=</span> <span class="dv">1</span> <span class="co"># Set the green channel to all ones</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>tensor_to_pil(target_image) <span class="co"># View it</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a loss function with this as the target</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>mse_loss <span class="op">=</span> MSELossToTarget(target_image, size<span class="op">=</span><span class="dv">128</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the loss between this and the output of a generator</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> PixelGenerator(<span class="dv">128</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> gen()</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>mse_loss(im) <span class="co"># We get a single measure with a way to trace the gradients backward</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>tensor(0.3330, grad_fn=&lt;MeanBackward0&gt;)</code></pre>
+</div>
+</div>
+<p>Q: Does that number make sense? What would the theoretical prediction be?</p>
+</section>
+<section id="optimization" class="level2">
+<h2 class="anchored" data-anchor-id="optimization">Optimization</h2>
+<p>We want to tweak the parameters of our generator to make the loss (derived from the output) lower. Here’s how we might do this in PyTorch:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set a target - here a green image as in the previous example</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>target_image <span class="op">=</span> torch.zeros(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">128</span>, <span class="dv">128</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>target_image[:,<span class="dv">1</span>] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a loss function based on this target</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>mse_loss <span class="op">=</span> MSELossToTarget(target_image, size<span class="op">=</span><span class="dv">128</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up our generator</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> PixelGenerator(<span class="dv">128</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up an optimizer on the generators parameters</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> torch.optim.Adam(gen.parameters(), lr<span class="op">=</span><span class="fl">1e-2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># get the generator output</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> gen()</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># find the loss</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>loss <span class="op">=</span> mse_loss(im)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset any stored gradients</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>optimizer.zero_grad()</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the gradients</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>loss.backward()</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the loss</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(loss.item()) </span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Update the generator parameters to reduce this loss</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>optimizer.step()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.335597962141037</code></pre>
+</div>
+</div>
+<p>Re-run the above cell a number of times, and use the following cell to see the current output:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>tensor_to_pil(gen()) <span class="co"># Generate and view an image</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>It gets greener over time - and the loss goes down. Hooray! Let’s define some new generators and loss functions and then make a clean version of this optimization code that runs in a loop so we don’t need to keep re-running a cell!</p>
+</section>
+<section id="next-generator-imstack" class="level2">
+<h2 class="anchored" data-anchor-id="next-generator-imstack">Next Generator: ImStack</h2>
+<p><a href="https://johnowhitaker.github.io/imstack/">ImStack is a library I made</a> to represent images as a ‘stack’ of tensors of different sizes. The intuition here is that the lowest level can incorporate the large shapes and higher layers can capture fine details. When optimizing it can be useful to have a few parameters that have a large effect on the output - this can allow a cleaner gradient signal than if each pixel is independant.</p>
+<p>This ‘generator’ just wraps an imstack. Note that it is the same as the pixel_generator except that we have a few extra possible arguments when creating one - for example we can initialise it with an input image (which we’ll try soon).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> ImStackGenerator(size<span class="op">=</span><span class="dv">128</span>, n_layers<span class="op">=</span><span class="dv">4</span>, base_size<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> gen()</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Output shape: </span><span class="sc">{</span>im<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Parameter shapes: </span><span class="sc">{</span>[p.shape <span class="cf">for</span> p <span class="kw">in</span> gen.parameters()]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>tensor_to_pil(im)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Output shape: torch.Size([1, 3, 128, 128])
+Parameter shapes: [torch.Size([3, 16, 16]), torch.Size([3, 32, 32]), torch.Size([3, 64, 64]), torch.Size([3, 128, 128])]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-15-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Breaking down the layers in the stack:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>gen.imstack.plot_layers()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-16-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>You can explore tweaking the base_size, n_layers and scale parameters to see how they affect the look of the initial (random) output and the total number of parameters.</p>
+</section>
+<section id="style-transfer" class="level2">
+<h2 class="anchored" data-anchor-id="style-transfer">Style Transfer</h2>
+<p>Now we’re going to try a classic application of pretrained models for artistic purposes: style transfer.</p>
+<section id="extracting-features-from-a-pretrained-model" class="level3">
+<h3 class="anchored" data-anchor-id="extracting-features-from-a-pretrained-model">Extracting features from a pretrained model</h3>
+<p>Pytorch has definitions of many common model architectures, and ways for loading pre-trained versions of them. In this case, we go for a small, older architecture called VGG16 trained on Imagenet (a dataset with &gt;1M across 1k classes):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load a pretrained model:</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>vgg16 <span class="op">=</span> models.vgg16(weights<span class="op">=</span>models.VGG16_Weights.IMAGENET1K_V1).to(device)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>vgg16.<span class="bu">eval</span>()</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>vgg16 <span class="op">=</span> vgg16.features</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> torch.rand(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">128</span>, <span class="dv">128</span>).to(device) <span class="co"># A random image for demo</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>feats <span class="op">=</span> calc_vgg_features(vgg16, im) <span class="co"># The activations of the specified layers</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>[f.shape <span class="cf">for</span> f <span class="kw">in</span> feats] <span class="co"># See the shapes of the returned features</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[torch.Size([1, 3, 16384]),
+ torch.Size([1, 64, 16384]),
+ torch.Size([1, 128, 4096]),
+ torch.Size([1, 256, 1024]),
+ torch.Size([1, 512, 256]),
+ torch.Size([1, 512, 64])]</code></pre>
+</div>
+</div>
+<p>You can see that from an input image we’ve got a bunch of features, one for each specified layer. We will use these for the style and content losses.</p>
+</section>
+<section id="content-lossperceptual-loss" class="level3">
+<h3 class="anchored" data-anchor-id="content-lossperceptual-loss">Content Loss/Perceptual Loss</h3>
+<p>Remember our picture of a CNN: <img src="https://neurohive.io/wp-content/uploads/2018/11/vgg16-1-e1542731207177.png" class="img-fluid" alt="architecture"></p>
+<p>We spoke about how early layers tend to capture edges and textures, while later layers aggregate these smaller features into more complex ones.</p>
+<p>We can exploit this to try and focus on the broad ‘content’ of an image in a way that is robust to small changes to texture or color. To achieve this, we’ll look only at activations from some deeper layers, in this case specified by <code>content_layers = [14, 19]</code>. You can print the network description and pick a few - see how changing them affects things!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># print(vgg16)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>content_loss <span class="op">=</span> ContentLossToTarget(im)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>content_loss(torch.rand(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">64</span>, <span class="dv">64</span>).to(device))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>tensor(2.4038, device='cuda:0', grad_fn=&lt;DivBackward0&gt;)</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: handle VGG16 when in other notebooks!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We won’t do a demo with just this loss, but feel free to experiment with it after you’ve seen a few of the upcoming demos. What happens when you start from random noise and optimise with just content loss to a target image - does it perfectly re-produce the target? What about intermediate stages - what kinds of feature appear first?</p>
+</section>
+<section id="style-loss-ot-version" class="level3">
+<h3 class="anchored" data-anchor-id="style-loss-ot-version">Style Loss (OT version)</h3>
+<p>In a similar way, we want to capture style features. We mentioned that these will be better described by earlier layers, but there is a hitch: we want the styles of a target image, but not necessarily in the same places (otherwise we’d just get the whole picture!). So we need some way to remove the spatial component and just focus on the relative mix of colours, textures etc.</p>
+<p>There are a few approaches. Most tutorials will use a gram-matrix based approach (which works fine) but I recently heard of a potentially better approach using ideas of optimal transport via this great video. We’ll implement both and you can compare the two for yourself :)</p>
+<p>Both give super large loss figures by default, so I’ve included a <code>scale_factor</code> argument to tame the values a little.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create and test a version of this loss</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>style_loss <span class="op">=</span> OTStyleLossToTarget(im)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>style_loss(torch.rand(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">64</span>, <span class="dv">64</span>).to(device))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>tensor(10.4530, device='cuda:0', grad_fn=&lt;MulBackward0&gt;)</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Testing...</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>style_loss <span class="op">=</span> GramStyleLossToTarget(im, vgg16<span class="op">=</span>vgg16)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>style_loss(torch.rand(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">64</span>, <span class="dv">64</span>).to(device))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>tensor(10.6278, device='cuda:0', grad_fn=&lt;MulBackward0&gt;)</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create and test a version of this loss</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>style_loss <span class="op">=</span> VincentStyleLossToTarget(im, vgg16<span class="op">=</span>vgg16)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>style_loss(torch.rand(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">128</span>, <span class="dv">128</span>).to(device))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>tensor([[5.7033]], device='cuda:0', grad_fn=&lt;MulBackward0&gt;)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="new-generator-siren" class="level2">
+<h2 class="anchored" data-anchor-id="new-generator-siren">New Generator: SIREN</h2>
+<p><a href="https://arxiv.org/abs/2006.09661">SIREN</a> represents an image in an interesting way, using a bunch of sinusiodal functions in a network. Anyone with some signals processing background can probably guess why this seems interesting.</p>
+<p>We’ll wrap a library that does all the hard work for us, but just for curiosity’s sake we can at least look at the building blocks, starting with the activation function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> SirenGenerator(size<span class="op">=</span><span class="dv">128</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> gen()</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Output shape: </span><span class="sc">{</span>im<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Parameter shapes: </span><span class="sc">{</span>[p.shape <span class="cf">for</span> p <span class="kw">in</span> gen.parameters()]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>tensor_to_pil(im)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Output shape: torch.Size([1, 3, 128, 128])
+Parameter shapes: [torch.Size([64, 2]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([3, 64]), torch.Size([3])]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-31-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co"> copy in and explain the rest of the code from https://colab.research.google.com/drive/1bsboh2GCxUwdzSmSg9AeCEaKKfW-hd74#scrollTo=wh8JQDX4izqN?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>What is neat here is that the output of the network is a function of x and y coords - we can evalluate this function at any resolution! No nasty pixels here. We can also control the number of parameters by chanigng the number and size of the layers. For example, here are two versions and the corresponding total number of parameters:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The default</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> SirenGenerator()</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Number of parameters in default net:'</span>, <span class="bu">sum</span>([p.numel() <span class="cf">for</span> p <span class="kw">in</span> gen.parameters()]))</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"># A smaller version</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> SirenGenerator(dim_hidden<span class="op">=</span><span class="dv">16</span>, num_layers<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Number of parameters in mini version:'</span>, <span class="bu">sum</span>([p.numel() <span class="cf">for</span> p <span class="kw">in</span> gen.parameters()]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of parameters in default net: 17027
+Number of parameters in mini version: 643</code></pre>
+</div>
+</div>
+<p>Since these networks can be quite small, and run once per pixel at whatever size you want to generate, they are perfect for running as compute shaders. For eg, I trained a SIREN network with CLIP and turned it into a shader here: https://www.shadertoy.com/view/flGSDD (animating some of the parameters for a cool effect).</p>
+</section>
+<section id="final-generator-bokeh" class="level2">
+<h2 class="anchored" data-anchor-id="final-generator-bokeh">Final Generator: Bokeh!</h2>
+<p>I’m going to show one final generator here as a demo of how you can get more creative with things like this. I wanted to make images with a small number of shapes, and while playing around got the idea of summing gaussians to get blurry blobs of different colours.</p>
+<p>What are the parameters? The location, color, intensity and size of eah blob.</p>
+<p>How do we render this in a way that is differentiable? It’s a little tricky, but to make it easier I did something to make any deep learning researcher cringe: I wrote a for loop. As in, <code>for each dot: ...</code> We don’t like things like this because GPUs are good at doing things in parallel! But hacky as it is, it works! You don’t have to do everything perfectly ;)</p>
+<p>This code isn’t itself very interesting or worth copying, but hopefully it does highlight the more general idea: hack things together and have fun!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create one with 100 blobs</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> DotGenerator(<span class="dv">100</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> DotGenerator(size<span class="op">=</span><span class="dv">256</span>)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> gen()</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Output shape: </span><span class="sc">{</span>im<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Parameter shapes: </span><span class="sc">{</span>[p.shape <span class="cf">for</span> p <span class="kw">in</span> gen.parameters()]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>tensor_to_pil(im)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Output shape: torch.Size([1, 3, 256, 256])
+Parameter shapes: [torch.Size([2, 100]), torch.Size([100]), torch.Size([100]), torch.Size([3, 100]), torch.Size([100])]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-35-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>You’ll need to tweak parameters to keep the image looking nice with larger sizes or different numbers of dots, but at least this does roughly what we wanted. Inpecting the parameters you’ll see we have a few for each dot (100 dots here):</p>
+<p>https://teia.art/sparkles_jw has examples of some animations made with this same idea…</p>
+</section>
+<section id="final-loss-clip" class="level2">
+<h2 class="anchored" data-anchor-id="final-loss-clip">Final Loss: CLIP</h2>
+<p>OK, the final loss function is going to feel like a super-power. What if we want to just describe what we want in text?</p>
+<p>Enter CLIP. Remember: CLIP maps images and text to the same space, so we can compare them. We’ll load a CLIP model and test this for ourselves for a few mini demos before turning this into another loss function we can use to guide generation.</p>
+<p>Text and image similarity (show use for one-shot classification and search)</p>
+<p>Text or image (or multiple) as prompts</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">#@title load a clip model</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co"># A nice small model (B='base') - good for quick tests and smaller download:</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>clip_model, _, preprocess <span class="op">=</span> open_clip.create_model_and_transforms(<span class="st">'ViT-B-32-quickgelu'</span>, pretrained<span class="op">=</span><span class="st">'laion400m_e32'</span>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="co"># A medium one (L='large'):</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co"># clip_model, _, preprocess = open_clip.create_model_and_transforms('ViT-L-14', pretrained='laion2b_s32b_b82k')</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="co"># A massive one (H='huge') that needs lots of RAM but might generate better images?:</span></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a><span class="co"># model, _, preprocess = open_clip.create_model_and_transforms('ViT-H-14', pretrained='laion2b_s32b_b79k')</span></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="co"># print(preprocess)</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>preprocess <span class="op">=</span> T.Compose([</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>    T.Resize(size<span class="op">=</span><span class="dv">224</span>, max_size<span class="op">=</span><span class="va">None</span>, antialias<span class="op">=</span><span class="va">None</span>),</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>    T.CenterCrop(size<span class="op">=</span>(<span class="dv">224</span>, <span class="dv">224</span>)),</span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>    T.Normalize(mean<span class="op">=</span>(<span class="fl">0.48145466</span>, <span class="fl">0.4578275</span>, <span class="fl">0.40821073</span>), std<span class="op">=</span>(<span class="fl">0.26862954</span>, <span class="fl">0.26130258</span>, <span class="fl">0.27577711</span>))</span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>clip_model.to(device)</span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a><span class="co"># We don't want to train CLIP at all so setting requires_grad=False everywhere</span></span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Probably unnecessary but rather safe than sorry :)</span></span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>clip_model.<span class="bu">eval</span>()<span class="op">;</span></span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p <span class="kw">in</span> clip_model.parameters():</span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>  p.requires_grad <span class="op">=</span> <span class="va">False</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># One shot classification demo</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Load an image</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>cat_im <span class="op">=</span> pil_to_tensor(Image.<span class="bu">open</span>(<span class="st">'cat.jpeg'</span>)).to(device)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Encode the image with CLIP</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>image_embed <span class="op">=</span> clip_model.encode_image(preprocess(cat_im))</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Image embed shape:'</span>, image_embed.shape)</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Encode some labels with CLIP</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>tokenized_text <span class="op">=</span> open_clip.tokenize([<span class="st">"a diagram"</span>, <span class="st">"a dog"</span>, <span class="st">"a cat"</span>]).to(device)</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>target_embeds <span class="op">=</span> clip_model.encode_text(tokenized_text)</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Texts embed shape:'</span>,target_embeds.shape) <span class="co"># One for each label</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Find the similarity to each </span></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>torch.nn.CosineSimilarity()(image_embed, target_embeds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Image embed shape: torch.Size([1, 512])
+Texts embed shape: torch.Size([3, 512])</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>tensor([0.1011, 0.1522, 0.2708], device='cuda:0')</code></pre>
+</div>
+</div>
+<p>We see a higher similarity for the label ‘a cat’ vs ‘a dog’ and ‘a diagram’ is the lowest’</p>
+<p>We can flip this around to do image search. Given a load of images, we embed a text query and find the image that is the best match. This could be a fun exercise to try ;)</p>
+<section id="using-it-as-a-loss" class="level3">
+<h3 class="anchored" data-anchor-id="using-it-as-a-loss">Using it as a loss</h3>
+<p>We can look at the similarity between the CLIP embedding of a generated image and one or more CLIP embeddings of images or text we’re feeding in as targets.</p>
+<p>Let’s look at this in action:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a generator and get an output im</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> SirenGenerator(size<span class="op">=</span><span class="dv">128</span>).to(device)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>gen.to(device)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> gen()</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Embed this with CLIP</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  image_embed <span class="op">=</span> clip_model.encode_image(preprocess(im))</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(image_embed.shape)</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Embed some target texts</span></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>  tokenized_text <span class="op">=</span> open_clip.tokenize([<span class="st">"a blue cat"</span>, <span class="st">"A cat picture"</span>]).to(device)</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>  target_embeds <span class="op">=</span> clip_model.encode_text(tokenized_text)</span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(target_embeds.shape)</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a><span class="co"># I wrote clip_loss_embeddings to take an image embed and multiple target embeds,</span></span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a><span class="co"># and return the average loss across the different targets:</span></span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a>clip_loss_embeddings(image_embed, target_embeds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>torch.Size([1, 512])
+torch.Size([2, 512])</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>tensor(1.0452, device='cuda:0')</code></pre>
+</div>
+</div>
+<p>Making our neat loss class It helps to make multiple variations of the generated image so CLIP doesn’t see the exact same thing each time - hence the make_cutouts bit here. More cutouts =&gt; cleaner loss signal but more memory usage. You can explore this or just go with the defaults.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Testing...</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>clip_loss_fn <span class="op">=</span> CLIPLossToTargets(text_prompts<span class="op">=</span>[<span class="st">'A cat'</span>], image_prompts<span class="op">=</span>[im], clip_model<span class="op">=</span>clip_model)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>clip_loss_fn(torch.rand(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">64</span>, <span class="dv">64</span>).to(device))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>tensor(0.5813, device='cuda:0')</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="your-turn" class="level1">
+<h1>Your Turn!</h1>
+<p>I’ve made a little function for you that takes a generator, a list of losses (and optional weights for each) and some extra parameters and optimises the parameters of the generator for a given number of steps.</p>
+<p>Your task: play around combining the different building blocks we made today, and add some of your own! Perhaps a loss that encourages a specific average color, or a generator that just tweaks the hue and brightness of an input image.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># EG1 SIREN + CLIP</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> SirenGenerator().to(device)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>clip_loss_fn <span class="op">=</span> CLIPLossToTargets(text_prompts<span class="op">=</span>[<span class="st">'A watercolor painting of a rose'</span>])</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>optimise(gen, [clip_loss_fn])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-46-output-1.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+</div>
+<p>We only update the image display every <code>display_every</code> steps to save time. Images are also saved to steps/ every <code>save_every</code> steps - nice if you want to make a video showing the process or something. Set this to 1000 or something to skip that part (makes things a little faster).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co">#@title style_image</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>style_image <span class="op">=</span> pil_from_url(<span class="st">"https://i.pinimg.com/originals/c3/b4/38/c3b438401bab3e91b487cd30309224f7.gif"</span>, size<span class="op">=</span>(<span class="dv">512</span>, <span class="dv">512</span>)).convert(<span class="st">'RGB'</span>)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>style_image.resize((<span class="dv">128</span>, <span class="dv">128</span>)) <span class="co"># Small for preview</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-47-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>content_image <span class="op">=</span> pil_from_url(<span class="st">"https://images.pexels.com/photos/156934/pexels-photo-156934.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1260&amp;h=750&amp;dpr=1"</span>, size<span class="op">=</span>(<span class="dv">512</span>, <span class="dv">512</span>))</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>content_image.resize((<span class="dv">128</span>, <span class="dv">128</span>)) <span class="co"># Small for preview</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-48-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co">#@markdown EG2 Style + content loss with DotGenerator</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> DotGenerator(size<span class="op">=</span><span class="dv">256</span>, device<span class="op">=</span>device)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>style_loss_fn <span class="op">=</span> OTStyleLossToTarget(pil_to_tensor(style_image).to(device))</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>content_loss_fn <span class="op">=</span> ContentLossToTarget(pil_to_tensor(content_image).to(device))</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>loss_functions <span class="op">=</span> [style_loss_fn, content_loss_fn]</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>loss_weights <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">15</span>] <span class="co"># More weight on the content loss</span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>optimise(gen, loss_functions, loss_weights<span class="op">=</span>loss_weights, save_every<span class="op">=</span><span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-49-output-1.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co">#@markdown EG3 More control</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters of the imstack tweaked</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> ImStackGenerator(size<span class="op">=</span><span class="dv">512</span>,base_size<span class="op">=</span><span class="dv">8</span>,n_layers<span class="op">=</span><span class="dv">3</span>,scale<span class="op">=</span><span class="dv">4</span>,layer_decay <span class="op">=</span> <span class="fl">0.3</span>).to(device)</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="co"># A custom optimiser</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> torch.optim.AdamW(gen.parameters(), lr<span class="op">=</span><span class="fl">0.05</span>, </span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>                       weight_decay<span class="op">=</span><span class="fl">1e-4</span>) <span class="co"># Weight decay for less extreme values</span></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Loss function</span></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>clip_loss_fn <span class="op">=</span> CLIPLossToTargets(text_prompts<span class="op">=</span>[<span class="st">'A watercolor painting of a yellow flower'</span>],</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>                                 n_cuts<span class="op">=</span><span class="dv">64</span>) <span class="co"># More cuts for smoother loss signal</span></span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Tweak number of steps and use our custom optimiser</span></span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>optimise(gen, loss_functions<span class="op">=</span>[clip_loss_fn],</span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>         optimizer<span class="op">=</span>opt, n_steps<span class="op">=</span><span class="dv">60</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-50-output-1.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co"> real nice style transfer example?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>style_loss_fn <span class="op">=</span> VincentStyleLossToTarget(pil_to_tensor(style_image).to(device), size<span class="op">=</span><span class="dv">512</span>, style_layers <span class="op">=</span> [<span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">9</span>, <span class="dv">11</span>])</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>content_loss_fn <span class="op">=</span> ContentLossToTarget(pil_to_tensor(content_image).to(device))</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The pixels we'll optimise</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> PixelGenerator(<span class="dv">512</span>, init_image<span class="op">=</span>content_image).to(device)</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="co"># The optimizer - feel free to try different ones here</span></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> torch.optim.AdamW(gen.parameters(), lr<span class="op">=</span><span class="fl">0.1</span>, weight_decay<span class="op">=</span><span class="fl">1e-6</span>)</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>optimise(gen, loss_functions<span class="op">=</span>[style_loss_fn, content_loss_fn],</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>         optimizer<span class="op">=</span>opt, n_steps<span class="op">=</span><span class="dv">60</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-52-output-1.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>tensor_to_pil(gen())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="62_Generators_and_Losses_files/figure-html/cell-53-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="todo-review-check-exports-work" class="level1">
+<h1>TODO review, check exports work…</h1>
+</section>
+<section id="todo-video-and-more-prose-explaining" class="level1">
+<h1>TODO video and more prose explaining</h1>
+</section>
+<section id="todo-move-optimize-func-higher-so-can-demo-as-we-make-generators" class="level1">
+<h1>TODO move optimize func higher so can demo as we make generators</h1>
+</section>
+<section id="todo-integrate-demo-into-lesson-2" class="level1">
+<h1>TODO integrate demo into lesson 2</h1>
+<section id="ideas" class="level2">
+<h2 class="anchored" data-anchor-id="ideas">Ideas</h2>
+<p>Can you get cool-looking images with a really small SIREN network? Can you get a nice-looking style transfer demo working? Can you implement a loss function that forces a specific palette of colours? Or a color gradient across the image? Can you chain these, first optimising towards one target then another (hint: just re-use a generator and call optimise again with different loss functions!). For eg SIREN to an image (via MSE) then to a CLIP prompt to tweak it. Advanced: Can you add new generators? One based on ‘Deep Image Priors’ perhaps, or using something like VQGAN and optimizing the latents which are then decoded by the VQGAN decoder to get an output image. Can you think of a loss that would avoid noisy images? Hint: look up ‘TV Loss’ How about a loss that penalizes over-saturated colours? How about a generator that can only make black and white images? How would you make a generator that created ‘seamless’ images to use in combination with CLIP? Advanced: What about using PyTorch3D’s differentiable rendering to optimise the vertices of a shape or the texture of a 3d model to match a style or CLIP prompt?</p>
+<p>Page stats: Total Hits: <a href="http://hits.dwyl.com/johnowhitaker/tglcourse"><img src="https://hits.dwyl.com/johnowhitaker/tglcourse.svg?style=flat-square&amp;show=unique" class="img-fluid" alt="HitCount"></a> Page visitors: <img src="https://page-views.glitch.me/badge?page_id=tglcourse.b62" class="img-fluid" alt="visitor badge"></p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
